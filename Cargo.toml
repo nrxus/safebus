@@ -1,0 +1,11 @@
+[package]
+name = "seattle-crime"
+version = "0.1.0"
+authors = ["Andres <andresnrx@gmail.com>"]
+
+[dependencies]
+rocket = ">=0.3.6"
+rocket_codegen = ">=0.3.6"
+reqwest = ">=0.8.5"
+hyper = ">=0.11"
+chrono = ">=0.4.1"
