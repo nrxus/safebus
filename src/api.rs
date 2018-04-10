@@ -29,7 +29,7 @@ mod tests {
         impl RocketExt for Rocket {
             fn inject(self) -> Self {
                 let mut client = CrimeClient::new();
-                client.set_request(Ok("[]".into()));
+                client.set_response(Ok("[]".into()));
                 self.manage(client)
             }
         }

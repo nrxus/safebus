@@ -3,10 +3,10 @@
 #![feature(custom_derive)]
 
 extern crate chrono;
-extern crate rocket;
-#[cfg_attr(any(not(test), feature="contract"), macro_use)]
+#[cfg_attr(any(not(test), feature = "contract"), macro_use)]
 extern crate hyper;
 extern crate reqwest;
+extern crate rocket;
 
 mod api;
 mod client;
@@ -17,7 +17,7 @@ trait RocketExt: Sized {
     fn inject(self) -> Self;
 }
 
-#[cfg(any(not(test), feature="contract"))]
+#[cfg(any(not(test), feature = "contract"))]
 impl RocketExt for rocket::Rocket {
     fn inject(self) -> Self {
         self.manage(client::CrimeClient::new())

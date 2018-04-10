@@ -1,4 +1,4 @@
-#[cfg(any(not(test), feature="contract"))]
+#[cfg(any(not(test), feature = "contract"))]
 mod real {
     use query::Query;
     use reqwest;
@@ -27,7 +27,7 @@ mod real {
     }
 }
 
-#[cfg(any(not(test), feature="contract"))]
+#[cfg(any(not(test), feature = "contract"))]
 pub use self::real::*;
 
 // Mock of Client for unit tests
@@ -52,7 +52,7 @@ mod mock {
             Ref::map(self.requests.borrow(), |v| v.as_slice())
         }
 
-        pub fn set_request(&mut self, response: Result<String, String>) {
+        pub fn set_response(&mut self, response: Result<String, String>) {
             self.response = Some(response)
         }
 

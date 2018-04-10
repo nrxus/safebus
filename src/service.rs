@@ -23,7 +23,7 @@ mod test {
         };
         let expected = Ok("Hello".into());
         let mut client = client::CrimeClient::new();
-        client.set_request(expected.clone());
+        client.set_response(expected.clone());
         let actual = service::info(location, &client);
         assert_eq!(actual, expected);
         let requests = client.requests();
