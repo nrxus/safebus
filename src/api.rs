@@ -1,6 +1,6 @@
+use client::CrimeClient;
 use service;
 
-use reqwest::Client;
 use rocket::{State, response::content::Json};
 
 #[derive(FromForm, Debug, Clone, Copy)]
@@ -10,18 +10,33 @@ pub struct Location {
 }
 
 #[get("/info?<location>")]
-fn info(location: Location, client: State<Client>) -> Result<Json<String>, String> {
+fn info(location: Location, client: State<CrimeClient>) -> Result<Json<String>, String> {
     service::info(location, &*client).map(Json)
 }
 
+// If run using `cargo test` then they will be run in "unit test" mode and use a mock client
+// If run using `cargo contract-test` then they will be run in "contract test" mode and do a real network call
 #[cfg(test)]
 mod tests {
     use rocket::http::{ContentType, Status};
 
-    // this test will do a real network call
-    // exclude from most test runs to avoid a long test feedback cycle
+    #[cfg(not(feature = "contract"))]
+    mod unit {
+        use RocketExt;
+        use client::CrimeClient;
+        use rocket::Rocket;
+
+        impl RocketExt for Rocket {
+            fn inject(self) -> Self {
+                let mut client = CrimeClient::new();
+                client.set_request(Ok("[]".into()));
+                self.manage(client)
+            }
+        }
+    }
+
     #[test]
-    fn integration() {
+    fn info_route() {
         let client = ::client();
         let response = client
             .get("/api/info?latitude=-122.33&longitude=47.59")

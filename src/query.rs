@@ -48,7 +48,7 @@ impl From<DateTime<Local>> for Filter {
     }
 }
 
-#[cfg(test)]
+#[cfg(all(test, not(feature = "contract")))]
 mod test {
     use super::*;
     use chrono::{NaiveDate, TimeZone};

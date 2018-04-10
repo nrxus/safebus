@@ -1,0 +1,2 @@
+[alias]
+contract-test = "test --features contract"
