@@ -1,7 +1,16 @@
 use client::CrimeClient;
-use service;
+use service::Service;
 
-use rocket::{State, response::content::Json};
+use rocket::{Outcome, Request, State, request::{self, FromRequest}, response::content::Json};
+
+impl<'a, 'r> FromRequest<'a, 'r> for Service<'r> {
+    type Error = ();
+
+    fn from_request(request: &'a Request<'r>) -> request::Outcome<Self, Self::Error> {
+        let client = request.guard::<State<CrimeClient>>()?.inner();
+        Outcome::Success(Service { client })
+    }
+}
 
 #[derive(FromForm, Debug, Clone, Copy)]
 pub struct Location {
@@ -10,8 +19,8 @@ pub struct Location {
 }
 
 #[get("/info?<location>")]
-fn info(location: Location, client: State<CrimeClient>) -> Result<Json<String>, String> {
-    service::info(location, &*client).map(Json)
+fn info<'a>(location: Location, service: Service<'a>) -> Result<Json<String>, String> {
+    service.info(location).map(Json)
 }
 
 // If run using `cargo test` then they will be run in "unit test" mode and use a mock client

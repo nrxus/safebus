@@ -4,27 +4,35 @@ use query::Query;
 
 use chrono::{Duration, Local};
 
-pub fn info(location: Location, client: &CrimeClient) -> Result<String, String> {
-    let start_date = Local::now() - Duration::days(180);
-    let query = Query::new(location).and(start_date);
-    client.request(query)
+pub struct Service<'c> {
+    pub client: &'c CrimeClient,
+}
+
+impl<'c> Service<'c> {
+    pub fn info(&self, location: Location) -> Result<String, String> {
+        let start_date = Local::now() - Duration::days(180);
+        let query = Query::new(location).and(start_date);
+        self.client.request(query)
+    }
 }
 
 #[cfg(all(test, not(feature = "contract")))]
 mod test {
     use super::*;
-    use {client, service};
+    use client;
 
     #[test]
     fn info() {
+        let expected = Ok("Hello".into());
+        let mut client = client::CrimeClient::new();
+        client.set_response(expected.clone());
+        let subject = Service { client: &client };
+
         let location = Location {
             latitude: 32.2,
             longitude: 67.23,
         };
-        let expected = Ok("Hello".into());
-        let mut client = client::CrimeClient::new();
-        client.set_response(expected.clone());
-        let actual = service::info(location, &client);
+        let actual = subject.info(location);
         assert_eq!(actual, expected);
         let requests = client.requests();
         assert_eq!(requests.len(), 1);
