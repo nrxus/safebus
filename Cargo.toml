@@ -6,8 +6,8 @@ authors = ["Andres <andresnrx@gmail.com>"]
 [dependencies]
 rocket = ">=0.3.6"
 rocket_codegen = ">=0.3.6"
-reqwest = ">=0.8.5"
-hyper = ">=0.11"
+reqwest = ">=0.8.6"
+hyper = "0.11.22"
 chrono = ">=0.4.1"
 
 [features]
