@@ -29,21 +29,6 @@ fn info<'a>(location: Location, service: Service<'a>) -> Result<Json<String>, St
 mod tests {
     use rocket::http::{ContentType, Status};
 
-    #[cfg(not(feature = "contract"))]
-    mod unit {
-        use RocketExt;
-        use client::CrimeClient;
-        use rocket::Rocket;
-
-        impl RocketExt for Rocket {
-            fn inject(self) -> Self {
-                let mut client = CrimeClient::new();
-                client.set_response(Ok("[]".into()));
-                self.manage(client)
-            }
-        }
-    }
-
     #[test]
     fn info_route() {
         let client = ::client();

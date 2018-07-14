@@ -19,26 +19,27 @@ impl<'c> Service<'c> {
 #[cfg(all(test, not(feature = "contract")))]
 mod test {
     use super::*;
-    use client;
+    use mockito::mock;
+    use providers;
+    use url::percent_encoding::{utf8_percent_encode, DEFAULT_ENCODE_SET};
 
     #[test]
     fn info() {
-        let expected = Ok("Hello".into());
-        let mut client = client::CrimeClient::new();
-        client.set_response(expected.clone());
-        let subject = Service { client: &client };
-
         let location = Location {
             latitude: 32.2,
             longitude: 67.23,
         };
+        let query = Query::new(location)
+            .and(Local::now() - Duration::days(180))
+            .to_string();
+        let query = utf8_percent_encode(query.as_str(), DEFAULT_ENCODE_SET);
+        let path = format!("/resource/policereport.json?{}", query);
+        let mock = mock("GET", path.as_str()).with_body("Hello").create();
+        let client = providers::crime_client();
+        let subject = Service { client: &client };
         let actual = subject.info(location);
-        assert_eq!(actual, expected);
-        let requests = client.requests();
-        assert_eq!(requests.len(), 1);
-        assert_eq!(
-            requests[0],
-            Query::new(location).and(Local::now() - Duration::days(180))
-        );
+
+        mock.assert();
+        assert_eq!(actual, Ok("Hello".to_string()));
     }
 }
