@@ -1,26 +1,29 @@
-use client::query::Query;
+mod query;
+
+pub use self::query::Query;
+
 use reqwest;
 
 header! { (XAppToken, "X-App-Token") => [String]}
 
-pub struct CrimeClient {
+pub struct Client {
     host: String,
     token: XAppToken,
-    client: reqwest::Client,
+    http_client: reqwest::Client,
 }
 
-impl CrimeClient {
-    pub fn new(client: reqwest::Client, host: String, token: String) -> Self {
-        CrimeClient {
+impl Client {
+    pub fn new(http_client: reqwest::Client, host: String, token: String) -> Self {
+        Client {
             host,
-            client,
+            http_client,
             token: XAppToken(token),
         }
     }
 
     pub fn request(&self, query: Query) -> Result<String, String> {
         let url = format!("{}/{}?{}", self.host, "resource/policereport.json", query);
-        self.client
+        self.http_client
             .get(&url)
             .header(self.token.clone())
             .send()

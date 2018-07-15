@@ -1,4 +1,4 @@
-use client::crime_client::CrimeClient;
+use client::seattle_data;
 use reqwest;
 
 #[cfg(any(not(test), feature = "contract"))]
@@ -7,11 +7,11 @@ mod real {
 
     use std::env;
 
-    pub fn crime_client(http_client: reqwest::Client) -> CrimeClient {
+    pub fn seattle_client(http_client: reqwest::Client) -> seattle_data::Client {
         let token =
             env::var("SEATTLE_API_KEY").expect("'SEATTLE_API_KEY' ENV VARIABLE IS REQUIRED");
         let host = "https://data.seattle.gov/".to_string();
-        CrimeClient::new(http_client, host, token)
+        seattle_data::Client::new(http_client, host, token)
     }
 }
 
@@ -24,10 +24,10 @@ mod mocks {
 
     use mockito;
 
-    pub fn crime_client(http_client: reqwest::Client) -> CrimeClient {
+    pub fn seattle_client(http_client: reqwest::Client) -> seattle_data::Client {
         let token = "SEATTLE_API_KEY".to_string();
         let host = mockito::SERVER_URL.to_string();
-        CrimeClient::new(http_client, host, token)
+        seattle_data::Client::new(http_client, host, token)
     }
 }
 
