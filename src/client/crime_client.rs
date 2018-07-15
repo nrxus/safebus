@@ -1,4 +1,4 @@
-use query::Query;
+use client::query::Query;
 use reqwest;
 
 header! { (XAppToken, "X-App-Token") => [String]}
@@ -10,11 +10,11 @@ pub struct CrimeClient {
 }
 
 impl CrimeClient {
-    pub fn new(host: String, token: String) -> Self {
+    pub fn new(client: reqwest::Client, host: String, token: String) -> Self {
         CrimeClient {
             host,
+            client,
             token: XAppToken(token),
-            client: reqwest::Client::new(),
         }
     }
 

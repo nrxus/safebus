@@ -1,26 +1,35 @@
+mod crime_client;
+mod providers;
+mod query;
+
+use self::{crime_client::CrimeClient, query::Query};
 use api::Location;
-use client::CrimeClient;
-use query::Query;
 
 use chrono::{Duration, Local};
+use reqwest;
 
-pub struct Service<'c> {
-    pub client: &'c CrimeClient,
+pub struct Client {
+    crime_client: CrimeClient,
 }
 
-impl<'c> Service<'c> {
+impl Client {
+    pub fn new(http_client: reqwest::Client) -> Self {
+        let crime_client = providers::crime_client(http_client);
+        Client { crime_client }
+    }
+
     pub fn info(&self, location: Location) -> Result<String, String> {
         let start_date = Local::now() - Duration::days(180);
         let query = Query::new(location).and(start_date);
-        self.client.request(query)
+        self.crime_client.request(query)
     }
 }
 
 #[cfg(all(test, not(feature = "contract")))]
 mod test {
     use super::*;
+
     use mockito::mock;
-    use providers;
     use url::percent_encoding::{utf8_percent_encode, DEFAULT_ENCODE_SET};
 
     #[test]
@@ -35,8 +44,10 @@ mod test {
         let query = utf8_percent_encode(query.as_str(), DEFAULT_ENCODE_SET);
         let path = format!("/resource/policereport.json?{}", query);
         let mock = mock("GET", path.as_str()).with_body("Hello").create();
-        let client = providers::crime_client();
-        let subject = Service { client: &client };
+        let crime_client = providers::crime_client(reqwest::Client::new());
+        let subject = Client {
+            crime_client: crime_client,
+        };
         let actual = subject.info(location);
 
         mock.assert();

@@ -16,23 +16,12 @@ extern crate url;
 
 mod api;
 mod client;
-mod providers;
-mod query;
-mod service;
-
-trait RocketExt: Sized {
-    fn inject(self) -> Self;
-}
-
-impl RocketExt for rocket::Rocket {
-    fn inject(self) -> Self {
-        let crime_client = providers::crime_client();
-        self.manage(crime_client)
-    }
-}
 
 fn rocket() -> rocket::Rocket {
-    rocket::ignite().inject().mount("/api", routes![api::info])
+    let client = client::Client::new(reqwest::Client::new());
+    rocket::ignite()
+        .manage(client)
+        .mount("/api", routes![api::info])
 }
 
 fn main() {
