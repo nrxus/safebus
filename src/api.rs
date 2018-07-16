@@ -16,7 +16,7 @@ fn info(location: Location, client: State<Client>) -> Result<Json<String>, Strin
 // If run using `cargo test` then they will be run in "unit test" mode and use a mock client
 // If run using `cargo contract-test` then they will be run in "contract test" mode and do a real network call
 #[cfg(test)]
-mod tests {
+mod test {
     use rocket::http::{ContentType, Status};
 
     #[test]

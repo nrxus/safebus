@@ -7,12 +7,18 @@ extern crate chrono;
 extern crate hyper;
 extern crate reqwest;
 extern crate rocket;
+extern crate serde;
+#[macro_use]
+extern crate serde_derive;
 
 #[cfg(all(test, not(feature = "contract")))]
 extern crate mockito;
 
 #[cfg(all(test, not(feature = "contract")))]
 extern crate url;
+
+#[cfg(all(test, not(feature = "contract")))]
+extern crate serde_urlencoded;
 
 mod api;
 mod client;

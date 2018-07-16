@@ -4,22 +4,29 @@ use chrono::{DateTime, Local};
 
 use std::fmt;
 
-#[derive(Debug, PartialEq, Eq, Clone)]
-pub struct Query(String);
+#[derive(Debug, PartialEq, Eq, Clone, Serialize)]
+pub struct Query {
+    #[serde(rename = "$where")]
+    filters: String,
+}
 
 impl Query {
     pub fn new(filter: impl Into<Filter>) -> Self {
-        Query(format!("$where={}", filter.into()))
+        Query {
+            filters: filter.into().to_string(),
+        }
     }
 
     pub fn and(self, filter: impl Into<Filter>) -> Self {
-        Query(format!("{}%20AND%20{}", self, filter.into()))
+        Query {
+            filters: format!("{}%20AND%20{}", self.filters, filter.into()),
+        }
     }
 }
 
 impl fmt::Display for Query {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str(&self.0)
+        write!(f, "$where={}", self.filters)
     }
 }
 
