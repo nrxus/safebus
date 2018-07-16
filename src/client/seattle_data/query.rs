@@ -19,7 +19,7 @@ impl Query {
 
     pub fn and(self, filter: impl Into<Filter>) -> Self {
         Query {
-            filters: format!("{}%20AND%20{}", self.filters, filter.into()),
+            filters: format!("{} AND {}", self.filters, filter.into()),
         }
     }
 }
@@ -87,7 +87,7 @@ mod test {
         let date = Local::now();
         let query = Query::new(location).and(date);
         let expected = format!(
-            "$where={}%20AND%20{}",
+            "$where={} AND {}",
             Filter::from(location),
             Filter::from(date)
         );
