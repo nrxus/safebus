@@ -27,11 +27,9 @@ impl Client {
 mod test {
     use super::*;
 
-    use mockito::mock;
-    use serde_urlencoded;
-
     #[test]
     fn info() {
+        let mock = seattle_data::mock_data::happy_crime();
         let seattle_client = providers::seattle_client(reqwest::Client::new());
         let subject = Client { seattle_client };
 
@@ -39,10 +37,6 @@ mod test {
             latitude: 32.2,
             longitude: 67.23,
         };
-        let query = seattle_data::Query::new(location).and(Local::now() - Duration::days(180));
-        let query = serde_urlencoded::to_string(query.clone()).unwrap();
-        let path = format!("/seattle_client/resource/policereport.json?{}", query);
-        let mock = mock("GET", path.as_str()).with_body("{}").create();
         let actual = subject.info(location);
 
         mock.assert();

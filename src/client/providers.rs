@@ -22,20 +22,11 @@ pub use self::real::*;
 mod mocks {
     use super::*;
 
-    use mockito::{self, Matcher};
-
-    use std::mem;
+    use mockito;
 
     pub fn seattle_client(http_client: reqwest::Client) -> seattle_data::Client {
         let token = "SEATTLE_API_KEY".to_string();
         let host = format!("{}/seattle_client", mockito::SERVER_URL);
-        let mock = mockito::mock("GET", Matcher::Regex("r^/seattle_client.*$".to_string()))
-            .with_status(200)
-            .with_body("{}")
-            .with_header("Content-Type", "application/json")
-            .create();
-        mem::forget(mock);
-
         seattle_data::Client::new(http_client, host, token)
     }
 }
