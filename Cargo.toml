@@ -16,6 +16,7 @@ serde_derive = "1.0"
 mockito = ">=0.12.0"
 url = ">=1.7.1"
 serde_urlencoded = ">=0.5.1"
+mocktopus = ">=0.4.1"
 
 [features]
 default = []
