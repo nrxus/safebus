@@ -27,12 +27,8 @@ extern crate serde_urlencoded;
 #[cfg(all(test, not(feature = "contract")))]
 extern crate mocktopus;
 
-#[cfg(all(test, not(feature = "contract")))]
-use mocktopus::macros::mockable;
-
 mod api;
 
-#[cfg_attr(all(test, not(feature = "contract")), mockable)]
 mod client;
 
 fn rocket() -> rocket::Rocket {

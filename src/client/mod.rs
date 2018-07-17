@@ -1,4 +1,3 @@
-#[cfg_attr(all(test, not(feature = "contract")), mockable)]
 mod seattle_data;
 
 use api::Location;
@@ -15,6 +14,7 @@ pub struct Client {
     seattle_client: seattle_data::Client,
 }
 
+#[cfg_attr(all(test, not(feature = "contract")), mockable)]
 impl Client {
     pub fn new(http_client: reqwest::Client) -> Self {
         let token =

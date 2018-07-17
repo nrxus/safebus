@@ -4,6 +4,9 @@ pub use self::query::Query;
 
 use reqwest;
 
+#[cfg(all(test, not(feature = "contract")))]
+use mocktopus::macros::mockable;
+
 header! { (XAppToken, "X-App-Token") => [String]}
 
 pub struct Client {
@@ -12,6 +15,7 @@ pub struct Client {
     http_client: reqwest::Client,
 }
 
+#[cfg_attr(all(test, not(feature = "contract")), mockable)]
 impl Client {
     pub fn new(http_client: reqwest::Client, host: String, token: String) -> Self {
         Client {
