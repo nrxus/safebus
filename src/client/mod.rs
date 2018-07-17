@@ -1,9 +1,9 @@
-mod providers;
-
 #[cfg_attr(all(test, not(feature = "contract")), mockable)]
 mod seattle_data;
 
 use api::Location;
+
+use std::env;
 
 use chrono::{Duration, Local};
 use reqwest;
@@ -17,7 +17,10 @@ pub struct Client {
 
 impl Client {
     pub fn new(http_client: reqwest::Client) -> Self {
-        let seattle_client = providers::seattle_client(http_client);
+        let token =
+            env::var("SEATTLE_API_KEY").expect("'SEATTLE_API_KEY' ENV VARIABLE IS REQUIRED");
+        let host = "https://data.seattle.gov/".to_string();
+        let seattle_client = seattle_data::Client::new(http_client, host, token);
         Client { seattle_client }
     }
 
