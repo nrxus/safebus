@@ -43,8 +43,7 @@ mod test {
                 MockResult::Return(Ok("{}".to_string()))
             })
         }
-        let seattle_client = providers::seattle_client(reqwest::Client::new());
-        let subject = Client { seattle_client };
+        let subject = Client::new(reqwest::Client::new());
 
         let location = Location {
             latitude: 32.2,
