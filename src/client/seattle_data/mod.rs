@@ -47,8 +47,11 @@ mod test {
 
     #[test]
     fn request() {
-        let host = format!("{}/seattle_client", SERVER_URL);
-        let subject = Client::new(reqwest::Client::new(), host, "SOME_TOKEN".to_string());
+        let subject = Client::new(
+            reqwest::Client::new(),
+            String::from(SERVER_URL),
+            String::from("SOME_TOKEN"),
+        );
 
         let location = Location {
             latitude: 32.2,
@@ -56,7 +59,7 @@ mod test {
         };
         let query = Query::new(location);
         let query_path = serde_urlencoded::to_string(query.clone()).unwrap();
-        let path = format!("/seattle_client/resource/policereport.json?{}", query_path);
+        let path = format!("/resource/policereport.json?{}", query_path);
         let mock = mock("GET", path.as_str())
             .with_status(200)
             .with_body("{}")
