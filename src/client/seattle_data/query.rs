@@ -24,12 +24,6 @@ impl Query {
     }
 }
 
-impl fmt::Display for Query {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "$where={}", self.filters)
-    }
-}
-
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Filter(String);
 
@@ -58,7 +52,12 @@ impl From<DateTime<Local>> for Filter {
 #[cfg(all(test, not(feature = "contract")))]
 mod test {
     use super::*;
+
+    use std::fmt::Display;
+
     use chrono::{NaiveDate, TimeZone};
+    use serde_urlencoded;
+    use url::form_urlencoded::byte_serialize;
 
     #[test]
     fn location_filter() {
@@ -67,7 +66,7 @@ mod test {
             longitude: -90.2,
         });
         let expected = "within_circle(location,-90.2,35.6,150)";
-        assert_format(filter, expected);
+        assert_eq!(filter.to_string(), expected);
     }
 
     #[test]
@@ -75,11 +74,11 @@ mod test {
         let date = NaiveDate::from_ymd(2014, 7, 24).and_hms(12, 34, 6);
         let filter = Filter::from(Local.from_local_datetime(&date).unwrap());
         let expected = "occurred_date_or_date_range_start>'2014-07-24T12:34:06'";
-        assert_format(filter, expected);
+        assert_eq!(filter.to_string(), expected);
     }
 
     #[test]
-    fn query() {
+    fn query_serializes() {
         let location = Location {
             latitude: 42.4,
             longitude: -28.3,
@@ -87,14 +86,19 @@ mod test {
         let date = Local::now();
         let query = Query::new(location).and(date);
         let expected = format!(
-            "$where={} AND {}",
-            Filter::from(location),
-            Filter::from(date)
+            "{}={}",
+            encode("$where"),
+            encode(format!(
+                "{} AND {}",
+                Filter::from(location),
+                Filter::from(date)
+            ))
         );
-        assert_format(query, &expected);
+        let actual = serde_urlencoded::to_string(query).unwrap();
+        assert_eq!(actual, expected);
     }
 
-    fn assert_format(actual: impl fmt::Display, expected: &str) {
-        assert_eq!(format!("{}", actual), expected);
+    fn encode(input: impl Display) -> String {
+        byte_serialize(input.to_string().as_bytes()).collect()
     }
 }
