@@ -42,7 +42,7 @@ mod test {
         let mut query = None;
         unsafe {
             seattle_data::Client::request.mock_raw(|_, q| {
-                query = Some(q);
+                query = Some(q.clone());
                 MockResult::Return(Ok("{}".to_string()))
             })
         }
@@ -53,7 +53,12 @@ mod test {
             longitude: 67.23,
         };
         let actual = subject.info(location);
+        let query = query.expect("seattle_data::Client::request not called");
 
+        assert_eq!(
+            query,
+            seattle_data::Query::new(location).and(Local::now() - Duration::days(180))
+        );
         assert_eq!(actual, Ok("{}".to_string()));
     }
 }
