@@ -24,7 +24,7 @@ mod test {
 
     #[test]
     fn info_route() {
-        let mut location: Option<Location> = None;
+        let mut location = None;
         unsafe {
             Client::info.mock_raw(|_, loc| {
                 location = Some(loc);

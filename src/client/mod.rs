@@ -1,10 +1,15 @@
 mod providers;
+
+#[cfg_attr(all(test, not(feature = "contract")), mockable)]
 mod seattle_data;
 
 use api::Location;
 
 use chrono::{Duration, Local};
 use reqwest;
+
+#[cfg(all(test, not(feature = "contract")))]
+use mocktopus::macros::mockable;
 
 pub struct Client {
     seattle_client: seattle_data::Client,
@@ -27,9 +32,17 @@ impl Client {
 mod test {
     use super::*;
 
+    use mocktopus::mocking::{MockResult, Mockable};
+
     #[test]
     fn info() {
-        let mock = seattle_data::mock_data::happy_crime();
+        let mut query = None;
+        unsafe {
+            seattle_data::Client::request.mock_raw(|_, q| {
+                query = Some(q);
+                MockResult::Return(Ok("{}".to_string()))
+            })
+        }
         let seattle_client = providers::seattle_client(reqwest::Client::new());
         let subject = Client { seattle_client };
 
@@ -39,7 +52,6 @@ mod test {
         };
         let actual = subject.info(location);
 
-        mock.assert();
         assert_eq!(actual, Ok("{}".to_string()));
     }
 }

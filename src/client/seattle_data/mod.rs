@@ -34,23 +34,6 @@ impl Client {
 }
 
 #[cfg(all(test, not(feature = "contract")))]
-pub mod mock_data {
-    use mockito::{mock, Matcher, Mock};
-
-    pub fn happy_crime() -> Mock {
-        let mock = mock("GET", Matcher::Regex(r"^/seattle_client.*$".to_string()));
-        set_json_ok(mock).create()
-    }
-
-    #[cfg(all(test, not(feature = "contract")))]
-    pub fn set_json_ok(mock: Mock) -> Mock {
-        mock.with_status(200)
-            .with_body("{}")
-            .with_header("Content-Type", "application/json")
-    }
-}
-
-#[cfg(all(test, not(feature = "contract")))]
 mod test {
     use super::*;
     use api::Location;
@@ -70,8 +53,11 @@ mod test {
         let query = Query::new(location);
         let query_path = serde_urlencoded::to_string(query.clone()).unwrap();
         let path = format!("/seattle_client/resource/policereport.json?{}", query_path);
-        let mock = mock("GET", path.as_str());
-        let mock = mock_data::set_json_ok(mock).create();
+        let mock = mock("GET", path.as_str())
+            .with_status(200)
+            .with_body("{}")
+            .with_header("Content-Type", "application/json")
+            .create();
         let actual = subject.request(&query);
         mock.assert();
 
