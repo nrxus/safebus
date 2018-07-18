@@ -47,6 +47,4 @@ fn main() {
 }
 
 #[cfg(test)]
-fn client() -> rocket::local::Client {
-    rocket::local::Client::new(rocket()).unwrap()
-}
+mod api_test;
