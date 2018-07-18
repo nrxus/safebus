@@ -21,6 +21,16 @@ pub fn get_bus_stops() -> Vec<client::BusStopInfo> {
         .expect("Could not parse api response into 'Vec<client::BusStop>'")
 }
 
+pub fn get_bus_stop_status() -> client::BusStopStatus {
+    let client = client();
+    let mut response = client.get("/api/bus_stop_status/1_75403").dispatch();
+    assert_eq!(response.status(), Status::Ok);
+    assert_eq!(response.content_type(), Some(ContentType::JSON));
+    let body = response.body_string().expect("body was empty");
+    serde_json::from_str(body.as_str())
+        .expect("Could not parse api response into 'client::BusStopStatus'")
+}
+
 pub fn get_crime() -> String {
     let client = client();
     let mut response = client
@@ -76,6 +86,34 @@ mod unit {
         assert_eq!(area.lat_span, 0.002);
         assert_eq!(area.lon_span, 0.003);
     }
+
+    #[test]
+    fn status() {
+        let mut actual_stop = None;
+        let expected_status = client::BusStopStatus {
+            info: client::BusStopInfo {
+                direction: String::from("S"),
+                id: String::from("1_75403"),
+                name: String::from("hello darkness"),
+                lat: 1.23,
+                lon: 123.23,
+            },
+            buses: vec![],
+            crime: String::from("some crime"),
+        };
+        unsafe {
+            client::Client::bus_stop_status.mock_raw(|_, s| {
+                actual_stop = Some(s.clone());
+                MockResult::Return(Ok(expected_status.clone()))
+            })
+        }
+
+        let actual_status = get_bus_stop_status();
+        assert_eq!(actual_status, expected_status);
+
+        let actual_stop = actual_stop.expect("'Client::bus_stop_status' not called");
+        assert_eq!(actual_stop, "1_75403");
+    }
 }
 
 #[cfg(feature = "contract")]
@@ -91,5 +129,11 @@ mod integration {
     fn bus_stops() {
         let stops = get_bus_stops();
         assert!(stops.len() > 0);
+    }
+
+    #[test]
+    fn status() {
+        let status = get_bus_stop_status();
+        assert!(status.buses.len() > 0);
     }
 }

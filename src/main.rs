@@ -39,7 +39,7 @@ fn rocket() -> rocket::Rocket {
     let client = client::Client::new(reqwest::Client::new());
     rocket::ignite()
         .manage(client)
-        .mount("/api", routes![api::info, api::bus_stops])
+        .mount("/api", routes![api::info, api::bus_stops, api::status])
 }
 
 fn main() {

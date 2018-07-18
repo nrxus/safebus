@@ -7,6 +7,22 @@ use api::{Area, Location};
 use chrono::{Duration, Local};
 use reqwest;
 
+#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
+pub struct BusStopStatus {
+    #[serde(flatten)]
+    pub info: BusStopInfo,
+    pub buses: Vec<BusState>,
+    pub crime: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
+pub struct BusState {
+    pub route: String,
+    pub headsign: String,
+    pub scheduled_time: u64,
+    pub predicted_time: u64,
+}
+
 pub struct Client {
     seattle_client: seattle_data::Client,
     bus_client: bus::Client,
@@ -58,6 +74,10 @@ impl Client {
             lon_span: area.lon_span,
             max_count: 20,
         })
+    }
+
+    pub fn bus_stop_status(&self, stop_id: String) -> Result<BusStopStatus, String> {
+        unimplemented!()
     }
 }
 
