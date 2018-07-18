@@ -18,12 +18,12 @@ pub struct Area {
 }
 
 #[get("/info?<location>")]
-fn info(location: Location, client: State<Client>) -> Result<Json<String>, String> {
+fn info(client: State<Client>, location: Location) -> Result<Json<String>, String> {
     client.info(location).map(Json)
 }
 
 #[get("/bus_stops?<area>")]
-fn bus_stops(area: Area, client: State<Client>) -> Result<Json<Vec<client::BusStopInfo>>, String> {
+fn bus_stops(client: State<Client>, area: Area) -> Result<Json<Vec<client::BusStopInfo>>, String> {
     client.bus_stops(area).map(Json)
 }
 
