@@ -23,6 +23,6 @@ fn info(location: Location, client: State<Client>) -> Result<Json<String>, Strin
 }
 
 #[get("/bus_stops?<area>")]
-fn bus_stops(area: Area, client: State<Client>) -> Result<Json<Vec<client::BusStop>>, String> {
+fn bus_stops(area: Area, client: State<Client>) -> Result<Json<Vec<client::BusStopInfo>>, String> {
     client.bus_stops(area).map(Json)
 }

@@ -11,7 +11,7 @@ pub struct StopsQuery {
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct Stop {
+pub struct StopInfo {
     pub id: String,
     pub direction: String,
     pub lat: f64,
@@ -41,7 +41,7 @@ use mocktopus::macros::mockable;
 
 #[cfg_attr(all(test, not(feature = "contract")), mockable)]
 impl Client {
-    pub fn stops(&self, query: &StopsQuery) -> Result<Vec<Stop>, String> {
+    pub fn stops(&self, query: &StopsQuery) -> Result<Vec<StopInfo>, String> {
         let url = format!("{}/{}", self.host, "api/where/stops-for-location.json");
         self.http_client
             .get(&url)
@@ -61,7 +61,7 @@ struct StopsListResponse {
 
 #[derive(Debug, Deserialize)]
 struct StopsListData {
-    list: Vec<Stop>,
+    list: Vec<StopInfo>,
 }
 
 #[cfg(all(test, not(feature = "contract")))]

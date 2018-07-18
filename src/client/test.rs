@@ -55,7 +55,7 @@ fn info() {
 fn bus_stops() {
     let subject = Client::new(reqwest::Client::new());
     let mut query = None;
-    let expected_stops = vec![bus::Stop {
+    let expected_stops = vec![bus::StopInfo {
         id: String::from("1_1234"),
         direction: String::from("N"),
         name: String::from("some bus"),

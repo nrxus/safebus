@@ -1,7 +1,7 @@
 mod bus;
 mod seattle_data;
 
-pub use self::bus::Stop as BusStop;
+pub use self::bus::StopInfo as BusStopInfo;
 use api::{Area, Location};
 
 use chrono::{Duration, Local};
@@ -50,7 +50,7 @@ impl Client {
         self.seattle_client.crime(&query)
     }
 
-    pub fn bus_stops(&self, area: Area) -> Result<Vec<bus::Stop>, String> {
+    pub fn bus_stops(&self, area: Area) -> Result<Vec<bus::StopInfo>, String> {
         self.bus_client.stops(&bus::StopsQuery {
             lat: area.lat,
             lon: area.lon,

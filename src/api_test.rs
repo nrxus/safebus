@@ -9,7 +9,7 @@ fn client() -> rocket::local::Client {
     rocket::local::Client::new(::rocket()).unwrap()
 }
 
-pub fn get_bus_stops() -> Vec<client::BusStop> {
+pub fn get_bus_stops() -> Vec<client::BusStopInfo> {
     let client = client();
     let mut response = client
         .get("/api/bus_stops?lat=47.653435&lon=-122.305641&lat_span=0.002&lon_span=0.003")
@@ -53,7 +53,7 @@ mod unit {
     #[test]
     fn bus_stops() {
         let mut area = None;
-        let expected = vec![client::BusStop {
+        let expected = vec![client::BusStopInfo {
             direction: String::from("S"),
             id: String::from("1_2345"),
             name: String::from("hello darkness"),

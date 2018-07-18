@@ -37,14 +37,14 @@ fn stops() {
     assert_eq!(
         actual,
         vec![
-            Stop {
+            StopInfo {
                 id: String::from("1_75403"),
                 direction: String::from("S"),
                 name: String::from("Stevens Way & Benton Ln"),
                 lat: 47.654365,
                 lon: -122.305214,
             },
-            Stop {
+            StopInfo {
                 id: String::from("1_75414"),
                 direction: String::from("N"),
                 name: String::from("Stevens Way & Benton Ln"),
