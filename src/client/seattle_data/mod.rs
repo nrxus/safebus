@@ -4,9 +4,6 @@ pub use self::query::Query;
 
 use reqwest;
 
-#[cfg(all(test, not(feature = "contract")))]
-use mocktopus::macros::mockable;
-
 header! { (XAppToken, "X-App-Token") => [String]}
 
 pub struct Client {
@@ -15,7 +12,6 @@ pub struct Client {
     http_client: reqwest::Client,
 }
 
-#[cfg_attr(all(test, not(feature = "contract")), mockable)]
 impl Client {
     pub fn new(http_client: reqwest::Client, host: String, token: String) -> Self {
         Client {
@@ -24,8 +20,15 @@ impl Client {
             token: XAppToken(token),
         }
     }
+}
 
-    pub fn request(&self, query: &Query) -> Result<String, String> {
+// allow users of Client to mock the requests in unit tests
+#[cfg(all(test, not(feature = "contract")))]
+use mocktopus::macros::mockable;
+
+#[cfg_attr(all(test, not(feature = "contract")), mockable)]
+impl Client {
+    pub fn crime(&self, query: &Query) -> Result<String, String> {
         let url = format!("{}/{}", self.host, "resource/policereport.json");
         self.http_client
             .get(&url)
@@ -38,36 +41,4 @@ impl Client {
 }
 
 #[cfg(all(test, not(feature = "contract")))]
-mod test {
-    use super::*;
-    use api::Location;
-
-    use mockito::{mock, SERVER_URL};
-    use serde_urlencoded;
-
-    #[test]
-    fn request() {
-        let subject = Client::new(
-            reqwest::Client::new(),
-            String::from(SERVER_URL),
-            String::from("SOME_TOKEN"),
-        );
-
-        let location = Location {
-            latitude: 32.2,
-            longitude: 67.23,
-        };
-        let query = Query::new(location);
-        let query_path = serde_urlencoded::to_string(query.clone()).unwrap();
-        let path = format!("/resource/policereport.json?{}", query_path);
-        let mock = mock("GET", path.as_str())
-            .with_status(200)
-            .with_body("{}")
-            .with_header("Content-Type", "application/json")
-            .create();
-        let actual = subject.request(&query);
-        mock.assert();
-
-        assert_eq!(actual, Ok("{}".to_string()));
-    }
-}
+mod test;
