@@ -2,6 +2,7 @@ mod bus;
 mod seattle_data;
 
 pub use self::bus::StopInfo as BusStopInfo;
+pub use self::bus::Status as BusStatus;
 use api::{Area, Location};
 
 use chrono::{Duration, Local};

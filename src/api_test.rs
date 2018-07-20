@@ -98,7 +98,12 @@ mod unit {
                 lat: 1.23,
                 lon: 123.23,
             },
-            buses: vec![],
+            buses: vec![client::BusStatus {
+                route: String::from("36E"),
+                headsign: String::from("MAGNOLIA & FOO"),
+                predicted_time: 1234093393,
+                scheduled_time: 24203223,
+            }],
         };
         unsafe {
             client::Client::bus_stop_status.mock_raw(|_, s| {
