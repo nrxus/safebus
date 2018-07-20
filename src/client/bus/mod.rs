@@ -1,4 +1,5 @@
 use reqwest;
+use serde;
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -47,6 +48,19 @@ impl Client {
             key_query: [("key", key)],
         }
     }
+
+    fn get<T>(&self, path: &str, query: &impl serde::Serialize) -> Result<T, String>
+    where
+        for<'de> T: serde::Deserialize<'de>,
+    {
+        self.http_client
+            .get(path)
+            .query(query)
+            .query(&self.key_query)
+            .send()
+            .and_then(|mut r| r.json())
+            .map_err(|e| format!("{}", e))
+    }
 }
 
 // allow users of Client to mock the requests in unit tests
@@ -57,14 +71,8 @@ use mocktopus::macros::mockable;
 impl Client {
     pub fn stops(&self, query: &StopsQuery) -> Result<Vec<StopInfo>, String> {
         let url = format!("{}/api/where/stops-for-location.json", self.host);
-        self.http_client
-            .get(&url)
-            .query(query)
-            .query(&self.key_query)
-            .send()
-            .and_then(|mut r| r.json())
+        self.get(url.as_str(), query)
             .map(|r: StopsListResponse| r.data.list)
-            .map_err(|e| format!("{}", e))
     }
 
     pub fn departures(&self, stop_id: &str) -> Result<Departures, String> {
@@ -72,13 +80,8 @@ impl Client {
             "{}/api/where/arrivals-and-departures-for-stop/{}.json",
             self.host, stop_id
         );
-        self.http_client
-            .get(&url)
-            .query(&self.key_query)
-            .send()
-            .and_then(|mut r| r.json())
+        self.get(url.as_str(), &EMPTY_QUERY)
             .map(DeparturesResponse::into)
-            .map_err(|e| format!("{}", e))
     }
 }
 
@@ -102,6 +105,8 @@ impl From<DeparturesResponse> for Departures {
         Departures { stop, buses }
     }
 }
+
+const EMPTY_QUERY: [(String, String); 0] = [];
 
 #[derive(Deserialize)]
 struct StopsListResponse {
