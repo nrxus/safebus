@@ -1,0 +1,291 @@
+{
+  "code": 200,
+  "currentTime": 1532043238023,
+  "data": {
+    "entry": {
+      "arrivalsAndDepartures": [
+        {
+          "arrivalEnabled": true,
+          "blockTripSequence": 13,
+          "departureEnabled": true,
+          "distanceFromStop": 7.896750810235972,
+          "frequency": null,
+          "lastUpdateTime": 0,
+          "numberOfStopsAway": 0,
+          "predicted": false,
+          "predictedArrivalInterval": null,
+          "predictedArrivalTime": 0,
+          "predictedDepartureInterval": null,
+          "predictedDepartureTime": 0,
+          "routeId": "1_100259",
+          "routeLongName": "",
+          "routeShortName": "67",
+          "scheduledArrivalInterval": null,
+          "scheduledArrivalTime": 1532043240000,
+          "scheduledDepartureInterval": null,
+          "scheduledDepartureTime": 1532043240000,
+          "serviceDate": 1531983600000,
+          "situationIds": [],
+          "status": "default",
+          "stopId": "1_75403",
+          "stopSequence": 5,
+          "totalStopsInTrip": 36,
+          "tripHeadsign": "Northgate Roosevelt",
+          "tripId": "1_39485626",
+          "tripStatus": {
+            "activeTripId": "1_39485626",
+            "blockTripSequence": 13,
+            "closestStop": "1_75403",
+            "closestStopTimeOffset": 2,
+            "distanceAlongTrip": 0,
+            "frequency": null,
+            "lastKnownDistanceAlongTrip": 0,
+            "lastKnownLocation": null,
+            "lastKnownOrientation": 0,
+            "lastLocationUpdateTime": 0,
+            "lastUpdateTime": 0,
+            "nextStop": "1_75403",
+            "nextStopTimeOffset": 2,
+            "orientation": 240.06848815687175,
+            "phase": "",
+            "position": {
+              "lat": 47.654425100279646,
+              "lon": -122.30509485135414
+            },
+            "predicted": false,
+            "scheduleDeviation": 0,
+            "scheduledDistanceAlongTrip": 2124.772077068512,
+            "serviceDate": 1531983600000,
+            "situationIds": [],
+            "status": "default",
+            "totalDistanceAlongTrip": 10984.36441876363,
+            "vehicleId": ""
+          },
+          "vehicleId": ""
+        },
+        {
+          "arrivalEnabled": true,
+          "blockTripSequence": 13,
+          "departureEnabled": true,
+          "distanceFromStop": 1023.8028340961027,
+          "frequency": null,
+          "lastUpdateTime": 1532043201000,
+          "numberOfStopsAway": 1,
+          "predicted": true,
+          "predictedArrivalInterval": null,
+          "predictedArrivalTime": 1532043461000,
+          "predictedDepartureInterval": null,
+          "predictedDepartureTime": 1532043461000,
+          "routeId": "1_100184",
+          "routeLongName": "",
+          "routeShortName": "31",
+          "scheduledArrivalInterval": null,
+          "scheduledArrivalTime": 1532042940000,
+          "scheduledDepartureInterval": null,
+          "scheduledDepartureTime": 1532042940000,
+          "serviceDate": 1531983600000,
+          "situationIds": [],
+          "status": "default",
+          "stopId": "1_75403",
+          "stopSequence": 5,
+          "totalStopsInTrip": 47,
+          "tripHeadsign": "Central Magnolia Fremont",
+          "tripId": "1_39487485",
+          "tripStatus": {
+            "activeTripId": "1_39487485",
+            "blockTripSequence": 13,
+            "closestStop": "1_25210",
+            "closestStopTimeOffset": -2,
+            "distanceAlongTrip": 1108.865993782645,
+            "frequency": null,
+            "lastKnownDistanceAlongTrip": 0,
+            "lastKnownLocation": {
+              "lat": 47.66096878051758,
+              "lon": -122.29888153076172
+            },
+            "lastKnownOrientation": 0,
+            "lastLocationUpdateTime": 1532043201000,
+            "lastUpdateTime": 1532043201000,
+            "nextStop": "1_75406",
+            "nextStopTimeOffset": 186,
+            "orientation": 198.65225162185098,
+            "phase": "in_progress",
+            "position": {
+              "lat": 47.66094880197966,
+              "lon": -122.29894727413527
+            },
+            "predicted": true,
+            "scheduleDeviation": 521,
+            "scheduledDistanceAlongTrip": 1108.865993782645,
+            "serviceDate": 1531983600000,
+            "situationIds": [],
+            "status": "SCHEDULED",
+            "totalDistanceAlongTrip": 13765.685644530096,
+            "vehicleId": "1_3666"
+          },
+          "vehicleId": "1_3666"
+        }
+      ],
+      "nearbyStopIds": [
+        "1_75414"
+      ],
+      "situationIds": [],
+      "stopId": "1_75403"
+    },
+    "references": {
+      "agencies": [
+        {
+          "disclaimer": "",
+          "email": "",
+          "fareUrl": "",
+          "id": "1",
+          "lang": "EN",
+          "name": "Metro Transit",
+          "phone": "206-553-3000",
+          "privateService": false,
+          "timezone": "America/Los_Angeles",
+          "url": "http://metro.kingcounty.gov"
+        }
+      ],
+      "routes": [
+        {
+          "agencyId": "1",
+          "color": "",
+          "description": "Univ District - Fremont - Central Magnolia",
+          "id": "1_100184",
+          "longName": "",
+          "shortName": "31",
+          "textColor": "",
+          "type": 3,
+          "url": "http://metro.kingcounty.gov/schedules/031/n0.html"
+        },
+        {
+          "agencyId": "1",
+          "color": "",
+          "description": "Northgate - Roosevelt - University District",
+          "id": "1_100259",
+          "longName": "",
+          "shortName": "67",
+          "textColor": "",
+          "type": 3,
+          "url": "http://metro.kingcounty.gov/schedules/067/n0.html"
+        }
+      ],
+      "situations": [],
+      "stops": [
+        {
+          "code": "25210",
+          "direction": "W",
+          "id": "1_25210",
+          "lat": 47.661049,
+          "locationType": 0,
+          "lon": -122.298904,
+          "name": "Montlake Blvd NE & NE 45th St",
+          "routeIds": [
+            "1_100184",
+            "1_100193",
+            "1_100259",
+            "1_100269",
+            "1_100273"
+          ],
+          "wheelchairBoarding": "UNKNOWN"
+        },
+        {
+          "code": "75403",
+          "direction": "S",
+          "id": "1_75403",
+          "lat": 47.654365,
+          "locationType": 0,
+          "lon": -122.305214,
+          "name": "Stevens Way & Benton Ln",
+          "routeIds": [
+            "1_100184",
+            "1_100193",
+            "1_100259",
+            "1_100269",
+            "1_100273",
+            "1_100168",
+            "1_100214",
+            "40_100235",
+            "29_810",
+            "29_821",
+            "29_855",
+            "29_860",
+            "29_871",
+            "29_880"
+          ],
+          "wheelchairBoarding": "UNKNOWN"
+        },
+        {
+          "Code": "75406",
+          "direction": "S",
+          "id": "1_75406",
+          "lat": 47.656876,
+          "locationType": 0,
+          "lon": -122.304909,
+          "name": "Stevens Way & Pend Oreille Rd",
+          "routeIds": [
+            "1_100184",
+            "1_100193",
+            "1_100259",
+            "1_100269",
+            "1_100273",
+            "1_100168",
+            "1_100214",
+            "40_100235",
+            "29_810",
+            "29_821",
+            "29_855",
+            "29_860",
+            "29_871",
+            "29_880"
+          ],
+          "wheelchairBoarding": "UNKNOWN"
+        },
+        {
+          "code": "75414",
+          "direction": "N",
+          "id": "1_75414",
+          "lat": 47.653713,
+          "locationType": 0,
+          "lon": -122.305023,
+          "name": "Stevens Way & Benton Ln",
+          "routeIds": [
+            "1_100184",
+            "1_100269",
+            "1_100214"
+          ],
+          "wheelchairBoarding": "UNKNOWN"
+        }
+      ],
+      "trips": [
+        {
+          "blockId": "1_5061859",
+          "directionId": "0",
+          "id": "1_39485626",
+          "routeId": "1_100259",
+          "routeShortName": "",
+          "serviceId": "1_44711",
+          "shapeId": "1_11067077",
+          "timeZone": "",
+          "tripHeadsign": "Northgate Roosevelt",
+          "tripShortName": "LOCAL"
+        },
+        {
+          "blockId": "1_5062043",
+          "directionId": "0",
+          "id": "1_39487485",
+          "routeId": "1_100184",
+          "routeShortName": "",
+          "serviceId": "1_44711",
+          "shapeId": "1_31031056",
+          "timeZone": "",
+          "tripHeadsign": "Central Magnolia Fremont",
+          "tripShortName": "LOCAL"
+        }
+      ]
+    }
+  },
+  "text": "OK",
+  "version": 2
+}

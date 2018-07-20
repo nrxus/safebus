@@ -99,7 +99,6 @@ mod unit {
                 lon: 123.23,
             },
             buses: vec![],
-            crime: String::from("some crime"),
         };
         unsafe {
             client::Client::bus_stop_status.mock_raw(|_, s| {

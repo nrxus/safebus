@@ -10,17 +10,8 @@ use reqwest;
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub struct BusStopStatus {
     #[serde(flatten)]
-    pub info: BusStopInfo,
-    pub buses: Vec<BusState>,
-    pub crime: String,
-}
-
-#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
-pub struct BusState {
-    pub route: String,
-    pub headsign: String,
-    pub scheduled_time: u64,
-    pub predicted_time: u64,
+    pub info: bus::StopInfo,
+    pub buses: Vec<bus::Status>,
 }
 
 pub struct Client {
@@ -76,8 +67,11 @@ impl Client {
         })
     }
 
-    pub fn bus_stop_status(&self, stop_id: String) -> Result<BusStopStatus, String> {
-        unimplemented!()
+    pub fn bus_stop_status(&self, stop_id: &str) -> Result<BusStopStatus, String> {
+        self.bus_client.departures(stop_id).map(|b| BusStopStatus {
+            info: b.stop,
+            buses: b.buses,
+        })
     }
 }
 

@@ -54,3 +54,53 @@ fn stops() {
         ]
     )
 }
+
+#[test]
+fn departures() {
+    let subject = Client::new(
+        reqwest::Client::new(),
+        String::from(SERVER_URL),
+        String::from("SOME_KEY"),
+    );
+
+    let path = "/api/where/arrivals-and-departures-for-stop/1_75403.json?key=SOME_KEY";
+
+    let mock = mock("GET", path)
+        .with_status(200)
+        .with_body(include_str!(
+            "../fixtures/arrivals-and-departures-for-stop.json"
+        ))
+        .with_header("Content-Type", "application/json")
+        .create();
+
+    let actual = subject
+        .departures("1_75403")
+        .expect("expected a succesful departures response");
+    mock.assert();
+    assert_eq!(
+        actual,
+        Departures {
+            buses: vec![
+                Status {
+                    headsign: String::from("Northgate Roosevelt"),
+                    route: String::from("67"),
+                    predicted_time: 0,
+                    scheduled_time: 1532043240000,
+                },
+                Status {
+                    headsign: String::from("Central Magnolia Fremont"),
+                    route: String::from("31"),
+                    predicted_time: 1532043461000,
+                    scheduled_time: 1532042940000,
+                },
+            ],
+            stop: StopInfo {
+                id: String::from("1_75403"),
+                name: String::from("Stevens Way & Benton Ln"),
+                direction: String::from("S"),
+                lat: 47.654365,
+                lon: -122.305214,
+            },
+        }
+    );
+}

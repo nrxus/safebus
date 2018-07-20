@@ -90,3 +90,40 @@ fn bus_stops() {
     };
     assert_eq!(actual_query, expected_query)
 }
+
+#[test]
+fn bus_stop_status() {
+    let subject = Client::new(reqwest::Client::new());
+    let mut bus_stop_id = None;
+    let departure_info = bus::Departures {
+        buses: vec![bus::Status {
+            headsign: String::from("MAGNOLIA PKWY"),
+            route: String::from("26E"),
+            predicted_time: 222324334,
+            scheduled_time: 232343432,
+        }],
+        stop: bus::StopInfo {
+            direction: String::from("N"),
+            id: String::from("1_2345"),
+            name: String::from("some name"),
+            lat: 233.232233,
+            lon: -123.23322,
+        },
+    };
+    unsafe {
+        bus::Client::departures.mock_raw(|_, b| {
+            bus_stop_id = Some(b.clone());
+            MockResult::Return(Ok(departure_info.clone()))
+        });
+    }
+    let actual_status = subject
+        .bus_stop_status("3_232")
+        .expect("expected a succesful bus stop status");
+    let expected_status = BusStopStatus {
+        buses: departure_info.buses,
+        info: departure_info.stop,
+    };
+    assert_eq!(actual_status, expected_status);
+    let bus_stop_id = bus_stop_id.expect("'bus::Client::departures' not called");
+    assert_eq!(bus_stop_id, "3_232");
+}

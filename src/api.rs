@@ -33,5 +33,5 @@ fn bus_stops(client: State<Client>, area: Area) -> Result<Json<Vec<client::BusSt
 
 #[get("/bus_stop_status/<stop_id>")]
 fn status(client: State<Client>, stop_id: String) -> Result<Json<client::BusStopStatus>, String> {
-    client.bus_stop_status(stop_id).map(Json)
+    client.bus_stop_status(stop_id.as_ref()).map(Json)
 }
