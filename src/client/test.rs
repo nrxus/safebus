@@ -12,7 +12,9 @@ impl Client {
                 String::from(SERVER_URL),
                 String::from("SEATTLE_TOKEN"),
             );
-            seattle_crime::Service::new(data_client)
+            let geo_client =
+                seattle_crime::geo::Client::new(http_client.clone(), String::from(SERVER_URL));
+            seattle_crime::Service::new(data_client, geo_client)
         };
         let bus_client = bus::Client::new(
             http_client,

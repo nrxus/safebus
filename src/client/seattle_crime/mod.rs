@@ -1,4 +1,5 @@
 pub mod data;
+pub mod geo;
 
 const NOT_RELEVANT_CRIMES: [&'static str; 46] = [
     "ANIMAL COMPLAINT",
@@ -66,10 +67,17 @@ const RELEVANT_CRIMES: [&'static str; 12] = [
 
 pub struct Service {
     data_client: data::Client,
+    geo_client: geo::Client,
 }
 
 impl Service {
-    pub fn new(data_client: data::Client) -> Self {
-        Service { data_client }
+    pub fn new(data_client: data::Client, geo_client: geo::Client) -> Self {
+        Service {
+            data_client,
+            geo_client,
+        }
     }
 }
+
+#[cfg(all(test, not(feature = "contract")))]
+mod test;

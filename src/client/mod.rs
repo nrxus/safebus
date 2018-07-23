@@ -29,14 +29,21 @@ impl Client {
         }
 
         let crime_service = {
-            let token = expect_env("SEATTLE_API_KEY");
-            let host = "https://data.seattle.gov/".to_string();
-            let data_client = seattle_crime::data::Client::new(http_client.clone(), host, token);
-            seattle_crime::Service::new(data_client)
+            use self::seattle_crime::{data, geo};
+            let data_client = {
+                let token = expect_env("SEATTLE_API_KEY");
+                let host = "https://data.seattle.gov".to_string();
+                data::Client::new(http_client.clone(), host, token)
+            };
+            let geo_client = {
+                let host = "https://gisrevprxy.seattle.gov".to_string();
+                geo::Client::new(http_client.clone(), host)
+            };
+            seattle_crime::Service::new(data_client, geo_client)
         };
         let bus_client = {
             let key = expect_env("ONEBUSAWAY_API_KEY");
-            let host = "http://api.pugetsound.onebusaway.org/".to_string();
+            let host = "http://api.pugetsound.onebusaway.org".to_string();
             bus::Client::new(http_client, host, key)
         };
         Client {

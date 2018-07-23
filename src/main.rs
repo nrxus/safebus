@@ -10,6 +10,9 @@
 extern crate chrono;
 #[macro_use]
 extern crate hyper;
+extern crate geo;
+extern crate geo_types;
+extern crate geojson;
 extern crate reqwest;
 extern crate rocket;
 extern crate rocket_contrib;
@@ -18,6 +21,9 @@ extern crate serde;
 extern crate serde_derive;
 
 // Unit Test Dependencies
+#[cfg(all(test, not(feature = "contract")))]
+#[macro_use]
+extern crate approx;
 #[cfg(all(test, not(feature = "contract")))]
 extern crate mockito;
 #[cfg(all(test, not(feature = "contract")))]
