@@ -1,4 +1,6 @@
-const NON_SERIOUS_CRIMES: [&'static str; 46] = [
+pub mod data;
+
+const NOT_RELEVANT_CRIMES: [&'static str; 46] = [
     "ANIMAL COMPLAINT",
     "BIAS INCIDENT",
     "COUNTERFEIT",
@@ -47,7 +49,7 @@ const NON_SERIOUS_CRIMES: [&'static str; 46] = [
     "[INC - CASE DC USE ONLY]",
 ];
 
-const SERIOUS_CRIMES: [&'static str; 12] = [
+const RELEVANT_CRIMES: [&'static str; 12] = [
     "ASSAULT",
     "ASSLT-POLICE ANIMAL",
     "BIKE THEFT",
@@ -61,3 +63,13 @@ const SERIOUS_CRIMES: [&'static str; 12] = [
     "VEHICLE THEFT",
     "WEAPON",
 ];
+
+pub struct Service {
+    data_client: data::Client,
+}
+
+impl Service {
+    pub fn new(data_client: data::Client) -> Self {
+        Service { data_client }
+    }
+}

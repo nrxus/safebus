@@ -4,22 +4,11 @@ use rocket::State;
 use rocket_contrib::Json;
 
 #[derive(FromForm, Debug, Clone, Copy, PartialEq)]
-pub struct Location {
-    pub latitude: f64,
-    pub longitude: f64,
-}
-
-#[derive(FromForm, Debug, Clone, Copy, PartialEq)]
 pub struct Area {
     pub lat: f64,
     pub lon: f64,
     pub lat_span: f64,
     pub lon_span: f64,
-}
-
-#[get("/info?<location>")]
-fn info(client: State<Client>, location: Location) -> Result<Json<String>, String> {
-    client.info(location).map(Json)
 }
 
 #[get("/bus_stops?<area>")]

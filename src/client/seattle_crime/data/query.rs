@@ -1,5 +1,3 @@
-use api::Location;
-
 use chrono::{DateTime, Local};
 
 use std::fmt;
@@ -33,15 +31,6 @@ impl fmt::Display for Filter {
     }
 }
 
-impl From<Location> for Filter {
-    fn from(location: Location) -> Filter {
-        Filter(format!(
-            "within_circle(location,{},{},150)",
-            location.longitude, location.latitude
-        ))
-    }
-}
-
 impl From<DateTime<Local>> for Filter {
     fn from(date: DateTime<Local>) -> Self {
         let date = date.format("%Y-%m-%dT%H:%M:%S");
@@ -60,16 +49,6 @@ mod test {
     use url::form_urlencoded::byte_serialize;
 
     #[test]
-    fn location_filter() {
-        let filter = Filter::from(Location {
-            latitude: 35.6,
-            longitude: -90.2,
-        });
-        let expected = "within_circle(location,-90.2,35.6,150)";
-        assert_eq!(filter.to_string(), expected);
-    }
-
-    #[test]
     fn date_filter() {
         let date = NaiveDate::from_ymd(2014, 7, 24).and_hms(12, 34, 6);
         let filter = Filter::from(Local.from_local_datetime(&date).unwrap());
@@ -79,20 +58,12 @@ mod test {
 
     #[test]
     fn query_serializes() {
-        let location = Location {
-            latitude: 42.4,
-            longitude: -28.3,
-        };
         let date = Local::now();
-        let query = Query::new(location).and(date);
+        let query = Query::new(date);
         let expected = format!(
             "{}={}",
             encode("$where"),
-            encode(format!(
-                "{} AND {}",
-                Filter::from(location),
-                Filter::from(date)
-            ))
+            encode(format!("{}", Filter::from(date)))
         );
         let actual = serde_urlencoded::to_string(query).unwrap();
         assert_eq!(actual, expected);

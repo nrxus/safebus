@@ -31,34 +31,11 @@ pub fn get_bus_stop_status() -> client::BusStopStatus {
         .expect("Could not parse api response into 'client::BusStopStatus'")
 }
 
-pub fn get_crime() -> String {
-    let client = client();
-    let mut response = client
-        .get("/api/info?latitude=-122.33&longitude=47.59")
-        .dispatch();
-    assert_eq!(response.status(), Status::Ok);
-    assert_eq!(response.content_type(), Some(ContentType::JSON));
-    response.body_string().expect("body was empty")
-}
-
 #[cfg(not(feature = "contract"))]
 mod unit {
     use super::*;
 
     use mocktopus::mocking::{MockResult, Mockable};
-
-    #[test]
-    fn crime() {
-        let mut location = None;
-        unsafe {
-            client::Client::info.mock_raw(|_, loc| {
-                location = Some(loc);
-                MockResult::Return(Ok("Hello".to_string()))
-            });
-        }
-
-        get_crime();
-    }
 
     #[test]
     fn bus_stops() {
@@ -123,11 +100,6 @@ mod unit {
 #[cfg(feature = "contract")]
 mod integration {
     use super::*;
-
-    #[test]
-    fn crime() {
-        get_crime();
-    }
 
     #[test]
     fn bus_stops() {

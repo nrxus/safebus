@@ -6,11 +6,14 @@ use mocktopus::mocking::{MockResult, Mockable};
 // in unit tests call to mockito SERVER_URL (localhost) in case mocktopus is not used by an unit_test
 impl Client {
     pub fn new(http_client: reqwest::Client) -> Self {
-        let seattle_client = seattle_data::Client::new(
-            http_client.clone(),
-            String::from(SERVER_URL),
-            String::from("SEATTLE_TOKEN"),
-        );
+        let crime_service = {
+            let data_client = seattle_crime::data::Client::new(
+                http_client.clone(),
+                String::from(SERVER_URL),
+                String::from("SEATTLE_TOKEN"),
+            );
+            seattle_crime::Service::new(data_client)
+        };
         let bus_client = bus::Client::new(
             http_client,
             String::from(SERVER_URL),
@@ -18,37 +21,10 @@ impl Client {
         );
 
         Client {
-            seattle_client,
+            crime_service,
             bus_client,
         }
     }
-}
-
-#[test]
-fn info() {
-    let subject = Client::new(reqwest::Client::new());
-    let expected = String::from("{}");
-
-    let mut query = None;
-    unsafe {
-        seattle_data::Client::crime.mock_raw(|_, q| {
-            query = Some(q.clone());
-            MockResult::Return(Ok(expected.clone()))
-        })
-    }
-
-    let location = Location {
-        latitude: 32.2,
-        longitude: 67.23,
-    };
-    let actual = subject
-        .info(location)
-        .expect("expected a succesful crime response");
-
-    assert_eq!(actual, expected);
-    let actual_query = query.expect("seattle_data::Client::request not called");
-    let expected_query = seattle_data::Query::new(location).and(Local::now() - Duration::days(180));
-    assert_eq!(actual_query, expected_query);
 }
 
 #[test]

@@ -1,11 +1,10 @@
 mod bus;
-mod seattle_data;
+mod seattle_crime;
 
-pub use self::bus::StopInfo as BusStopInfo;
 pub use self::bus::Status as BusStatus;
-use api::{Area, Location};
+pub use self::bus::StopInfo as BusStopInfo;
+use api::Area;
 
-use chrono::{Duration, Local};
 use reqwest;
 
 #[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
@@ -16,7 +15,7 @@ pub struct BusStopStatus {
 }
 
 pub struct Client {
-    seattle_client: seattle_data::Client,
+    crime_service: seattle_crime::Service,
     bus_client: bus::Client,
 }
 
@@ -29,10 +28,11 @@ impl Client {
             env::var(name).expect(&format!("'{}' ENV VARIABLE IS REQUIRED", name))
         }
 
-        let seattle_client = {
+        let crime_service = {
             let token = expect_env("SEATTLE_API_KEY");
             let host = "https://data.seattle.gov/".to_string();
-            seattle_data::Client::new(http_client.clone(), host, token)
+            let data_client = seattle_crime::data::Client::new(http_client.clone(), host, token);
+            seattle_crime::Service::new(data_client)
         };
         let bus_client = {
             let key = expect_env("ONEBUSAWAY_API_KEY");
@@ -40,7 +40,7 @@ impl Client {
             bus::Client::new(http_client, host, key)
         };
         Client {
-            seattle_client,
+            crime_service,
             bus_client,
         }
     }
@@ -52,12 +52,6 @@ use mocktopus::macros::mockable;
 
 #[cfg_attr(all(test, not(feature = "contract")), mockable)]
 impl Client {
-    pub fn info(&self, location: Location) -> Result<String, String> {
-        let start_date = Local::now() - Duration::days(180);
-        let query = seattle_data::Query::new(location).and(start_date);
-        self.seattle_client.crime(&query)
-    }
-
     pub fn bus_stops(&self, area: Area) -> Result<Vec<bus::StopInfo>, String> {
         self.bus_client.stops(&bus::StopsQuery {
             lat: area.lat,
