@@ -6,6 +6,7 @@ use geo_types::Polygon;
 use geojson::{conversion::TryInto, GeoJson};
 use reqwest;
 
+#[derive(Debug, Clone, PartialEq)]
 pub struct Location {
     pub lon: f64,
     pub lat: f64,
@@ -28,6 +29,11 @@ impl Client {
     }
 }
 
+// allow users of Client to mock the requests in unit tests
+#[cfg(all(test, not(feature = "contract")))]
+use mocktopus::macros::mockable;
+
+#[cfg_attr(all(test, not(feature = "contract")), mockable)]
 impl Client {
     pub fn beat_for(&self, location: Location) -> Result<Beat, String> {
         let url = format!(

@@ -10,7 +10,6 @@
 extern crate chrono;
 #[macro_use]
 extern crate hyper;
-extern crate geo;
 extern crate geo_types;
 extern crate geojson;
 extern crate reqwest;

@@ -2,6 +2,12 @@ use chrono::{DateTime, Local};
 
 use std::fmt;
 
+#[derive(Debug, PartialEq, Eq, Clone)]
+pub enum Filter {
+    After(DateTime<Local>),
+    Beat(String),
+}
+
 #[derive(Debug, PartialEq, Eq, Clone, Serialize)]
 pub struct Query {
     #[serde(rename = "$where")]
@@ -9,32 +15,25 @@ pub struct Query {
 }
 
 impl Query {
-    pub fn new(filter: impl Into<Filter>) -> Self {
+    pub fn new(filter: Filter) -> Self {
         Query {
-            filters: filter.into().to_string(),
+            filters: filter.to_string(),
         }
     }
 
-    pub fn and(self, filter: impl Into<Filter>) -> Self {
+    pub fn and(self, filter: Filter) -> Self {
         Query {
-            filters: format!("{} AND {}", self.filters, filter.into()),
+            filters: format!("{} AND {}", self.filters, filter.to_string()),
         }
     }
 }
-
-#[derive(Debug, PartialEq, Eq, Clone)]
-pub struct Filter(String);
 
 impl fmt::Display for Filter {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str(&self.0)
-    }
-}
-
-impl From<DateTime<Local>> for Filter {
-    fn from(date: DateTime<Local>) -> Self {
-        let date = date.format("%Y-%m-%dT%H:%M:%S");
-        Filter(format!("occurred_date_or_date_range_start>'{}'", date))
+        match self {
+            Filter::After(date) => write!(f, "occ_datetime>'{}'", date.format("%Y-%m-%d")),
+            Filter::Beat(beat) => write!(f, "beat='{}'", beat),
+        }
     }
 }
 
@@ -51,19 +50,33 @@ mod test {
     #[test]
     fn date_filter() {
         let date = NaiveDate::from_ymd(2014, 7, 24).and_hms(12, 34, 6);
-        let filter = Filter::from(Local.from_local_datetime(&date).unwrap());
-        let expected = "occurred_date_or_date_range_start>'2014-07-24T12:34:06'";
+        let filter = Filter::After(Local.from_local_datetime(&date).unwrap());
+        let expected = "occ_datetime>'2014-07-24'";
+        assert_eq!(filter.to_string(), expected);
+    }
+
+    #[test]
+    fn beat_filter() {
+        let filter = Filter::Beat(String::from("U3"));
+        let expected = "beat='U3'";
         assert_eq!(filter.to_string(), expected);
     }
 
     #[test]
     fn query_serializes() {
-        let date = Local::now();
-        let query = Query::new(date);
+        use super::Filter::*;
+
+        let after_date = After(Local::now());
+        let beat = Beat(String::from("U1"));
+        let query = Query::new(after_date.clone()).and(beat.clone());
         let expected = format!(
             "{}={}",
             encode("$where"),
-            encode(format!("{}", Filter::from(date)))
+            encode(format!(
+                "{} AND {}",
+                after_date.to_string(),
+                beat.to_string()
+            ))
         );
         let actual = serde_urlencoded::to_string(query).unwrap();
         assert_eq!(actual, expected);
