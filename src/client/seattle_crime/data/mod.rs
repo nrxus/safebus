@@ -36,12 +36,13 @@ use mocktopus::macros::mockable;
 #[cfg_attr(all(test, not(feature = "contract")), mockable)]
 impl Client {
     pub fn crimes(&self, query: &Query) -> Result<Vec<Crime>, String> {
-        let url = format!("{}/{}", self.host, "resource/aj7i-nahf.json");
+        let url = format!("{}/{}", self.host, "resource/xurz-654a.json");
         self.http_client
             .get(&url)
             .header(self.token.clone())
             .query(query)
             .send()
+            .and_then(reqwest::Response::error_for_status)
             .and_then(|mut r| r.json())
             .map(into_crime)
             .map_err(|e| format!("{}", e))

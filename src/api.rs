@@ -1,7 +1,11 @@
 use client::{self, Client};
 
-use rocket::State;
+use rocket::{http::Status, response::status, State};
 use rocket_contrib::Json;
+
+use std::result::Result as StdResult;
+
+type Result<T> = StdResult<Json<T>, status::Custom<String>>;
 
 #[derive(FromForm, Debug, Clone, Copy, PartialEq)]
 pub struct Area {
@@ -12,15 +16,17 @@ pub struct Area {
 }
 
 #[get("/bus_stops?<area>")]
-fn bus_stops(client: State<Client>, area: Area) -> Result<Json<Vec<client::BusStopInfo>>, String> {
-    client.bus_stops(area).map(Json)
+fn bus_stops(client: State<Client>, area: Area) -> Result<Vec<client::BusStopInfo>> {
+    client
+        .bus_stops(area)
+        .map(Json)
+        .map_err(|e| status::Custom(Status::InternalServerError, e))
 }
 
-//https://gisrevprxy.seattle.gov/ArcGIS/rest/services/DoIT_ext/SP_Precincts_Beats/MapServer/2/query?geometry=-122.2861032,47.6828274&geometryType=esriGeometryPoint&inSR=4326&returnGeometry=false&f=pjson
-
-//https://data.seattle.gov/resource/xurz-654a.json?$where=occ_datetime%3E%272018-07-13T00:00:00%27%20AND%20beat=%27U3%27
-
 #[get("/bus_stop_status/<stop_id>")]
-fn status(client: State<Client>, stop_id: String) -> Result<Json<client::BusStopStatus>, String> {
-    client.bus_stop_status(stop_id.as_ref()).map(Json)
+fn status(client: State<Client>, stop_id: String) -> Result<client::BusStopStatus> {
+    client
+        .bus_stop_status(stop_id.as_ref())
+        .map(Json)
+        .map_err(|e| status::Custom(Status::InternalServerError, e))
 }

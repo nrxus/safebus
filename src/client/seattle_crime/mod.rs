@@ -8,14 +8,14 @@ use chrono::{Duration, Local};
 
 #[derive(Debug, PartialEq)]
 pub struct CrimeData {
-    related_crimes: Vec<Crime>,
-    unrelated_crimes: Vec<Crime>,
+    pub related_crimes: Vec<Crime>,
+    pub unrelated_crimes: Vec<Crime>,
 }
 
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Crime {
-    description: String,
-    density: f64,
+    pub description: String,
+    pub density: f64,
 }
 
 pub struct Service {
@@ -32,6 +32,11 @@ impl Service {
     }
 }
 
+// allow users of Service to mock the requests in unit tests
+#[cfg(all(test, not(feature = "contract")))]
+use mocktopus::macros::mockable;
+
+#[cfg_attr(all(test, not(feature = "contract")), mockable)]
 impl Service {
     pub fn crime_nearby(&self, location: Location) -> Result<CrimeData, String> {
         let beat = self.geo_client.beat_for(location)?;
@@ -66,9 +71,12 @@ impl Service {
     }
 }
 
-const UNRELATED_CRIMES: [&'static str; 155] = [
+const UNRELATED_CRIMES: [&'static str; 162] = [
+    "ADULT-VULNERABLE-NEGLECT",
     "ANIMAL-CRUELTY",
     "ANIMAL-OTH",
+    "ARSON-BUSINESS",
+    "ARSON-OTHER",
     "BIAS INCIDENT",
     "BRIBERY",
     "BURGLARY-FORCE-NONRES",
@@ -78,6 +86,9 @@ const UNRELATED_CRIMES: [&'static str; 155] = [
     "BURGLARY-OTHER",
     "BURGLARY-SECURE PARKING-NONRES",
     "BURGLARY-SECURE PARKING-RES",
+    "CHILD-HARBOR MINOR",
+    "CHILD-NEGLECT",
+    "CHILD-OTHER",
     "COUNTERFEIT",
     "DISORDERLY CONDUCT",
     "DISPUTE-CIVIL PROPERTY (AUTO)",
@@ -190,6 +201,7 @@ const UNRELATED_CRIMES: [&'static str; 155] = [
     "PROSTITUTION",
     "PROSTITUTION-ASSIST-PROMOTE",
     "RECKLESS BURNING",
+    "SEXOFF-SODOMY",
     "SOAP-VIOL - ZONE 1",
     "SOAP-VIOL - ZONE 2",
     "SOAP-VIOL - ZONE 3",
@@ -224,9 +236,11 @@ const UNRELATED_CRIMES: [&'static str; 155] = [
     "[INC - CASE DC USE ONLY]",
 ];
 
-const RELATED_CRIMES: [&'static str; 64] = [
+const RELATED_CRIMES: [&'static str; 70] = [
     "ANIMAL-BITE",
     "ASSLT-AGG-BODYFORCE",
+    "ASSLT-AGG-DV-BODYFORCE",
+    "ASSLT-AGG-DV-WEAPON",
     "ASSLT-AGG-GUN",
     "ASSLT-AGG-POLICE-BODYFORCE",
     "ASSLT-AGG-POLICE-GUN",
@@ -251,6 +265,7 @@ const RELATED_CRIMES: [&'static str; 64] = [
     "HOMICIDE-PREMEDITATED-WEAPON",
     "MALICIOUS HARASSMENT",
     "METRO TRANSIT - ON BUS, TUNNEL",
+    "RAPE-STRONGARM",
     "ROBBERY-BANK-BODYFORCE",
     "ROBBERY-BANK-GUN",
     "ROBBERY-BANK-OTHER",
@@ -265,6 +280,9 @@ const RELATED_CRIMES: [&'static str; 64] = [
     "ROBBERY-STREET-BODYFORCE",
     "ROBBERY-STREET-GUN",
     "ROBBERY-STREET-WEAPON",
+    "SEXOFF-INDECENT LIBERTIES",
+    "SEXOFF-LEWD CONDUCT",
+    "SEXOFF-PEEPER",
     "THEFT-AUTO PARTS",
     "THEFT-AUTOACC",
     "THEFT-BICYCLE",

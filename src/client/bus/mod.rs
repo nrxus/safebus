@@ -58,6 +58,7 @@ impl Client {
             .query(query)
             .query(&self.key_query)
             .send()
+            .and_then(reqwest::Response::error_for_status)
             .and_then(|mut r| r.json())
             .map_err(|e| format!("{}", e))
     }

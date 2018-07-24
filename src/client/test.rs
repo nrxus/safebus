@@ -88,10 +88,31 @@ fn bus_stop_status() {
             lon: -123.23322,
         },
     };
+    let related_crimes = vec![Crime {
+        description: String::from("ROBBERY"),
+        density: 0.23,
+    }];
+    let unrelated_crimes = vec![Crime {
+        description: String::from("ROBBERY"),
+        density: 0.23,
+    }];
     unsafe {
         bus::Client::departures.mock_raw(|_, b| {
             bus_stop_id = Some(b.clone());
             MockResult::Return(Ok(departure_info.clone()))
+        });
+    }
+    unsafe {
+        seattle_crime::Service::crime_nearby.mock_raw(|_, actual_location| {
+            let expected_location = seattle_crime::Location {
+                lat: departure_info.stop.lat,
+                lon: departure_info.stop.lon,
+            };
+            assert_eq!(actual_location, expected_location);
+            MockResult::Return(Ok(seattle_crime::CrimeData {
+                related_crimes: related_crimes.clone(),
+                unrelated_crimes: unrelated_crimes.clone(),
+            }))
         });
     }
     let actual_status = subject
@@ -100,6 +121,8 @@ fn bus_stop_status() {
     let expected_status = BusStopStatus {
         buses: departure_info.buses,
         info: departure_info.stop,
+        related_crimes,
+        unrelated_crimes,
     };
     assert_eq!(actual_status, expected_status);
     let bus_stop_id = bus_stop_id.expect("'bus::Client::departures' not called");

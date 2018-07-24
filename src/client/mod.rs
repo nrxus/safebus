@@ -3,6 +3,7 @@ mod seattle_crime;
 
 pub use self::bus::Status as BusStatus;
 pub use self::bus::StopInfo as BusStopInfo;
+pub use self::seattle_crime::Crime;
 use api::Area;
 
 use reqwest;
@@ -12,6 +13,8 @@ pub struct BusStopStatus {
     #[serde(flatten)]
     pub info: bus::StopInfo,
     pub buses: Vec<bus::Status>,
+    pub related_crimes: Vec<Crime>,
+    pub unrelated_crimes: Vec<Crime>,
 }
 
 pub struct Client {
@@ -70,9 +73,17 @@ impl Client {
     }
 
     pub fn bus_stop_status(&self, stop_id: &str) -> Result<BusStopStatus, String> {
-        self.bus_client.departures(stop_id).map(|b| BusStopStatus {
-            info: b.stop,
-            buses: b.buses,
+        let departures = self.bus_client.departures(stop_id)?;
+        let crime_data = self.crime_service.crime_nearby(seattle_crime::Location {
+            lat: departures.stop.lat,
+            lon: departures.stop.lon,
+        })?;
+
+        Ok(BusStopStatus {
+            info: departures.stop,
+            buses: departures.buses,
+            related_crimes: crime_data.related_crimes,
+            unrelated_crimes: crime_data.unrelated_crimes,
         })
     }
 }

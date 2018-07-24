@@ -53,6 +53,7 @@ impl Client {
                 ("f", "geojson"),
             ])
             .send()
+            .and_then(reqwest::Response::error_for_status)
             .and_then(|mut r| r.json())
             .map_err(|e| format!("{}", e))
             .and_then(try_into_beat)

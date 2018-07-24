@@ -81,6 +81,14 @@ mod unit {
                 predicted_time: 1234093393,
                 scheduled_time: 24203223,
             }],
+            related_crimes: vec![client::Crime {
+                description: String::from("ROBBERY"),
+                density: 0.23,
+            }],
+            unrelated_crimes: vec![client::Crime {
+                description: String::from("NARCOTICS"),
+                density: 0.111,
+            }],
         };
         unsafe {
             client::Client::bus_stop_status.mock_raw(|_, s| {
@@ -111,5 +119,7 @@ mod integration {
     fn status() {
         let status = get_bus_stop_status();
         assert!(status.buses.len() > 0);
+        assert!(status.related_crimes.len() > 0);
+        assert!(status.unrelated_crimes.len() > 0);
     }
 }

@@ -16,7 +16,7 @@ fn crime() {
 
     let query = Query::new(After(Local::now()));
     let query_path = serde_urlencoded::to_string(query.clone()).unwrap();
-    let path = format!("/resource/aj7i-nahf.json?{}", query_path);
+    let path = format!("/resource/xurz-654a.json?{}", query_path);
     let mock = mock("GET", path.as_str())
         .match_header("X-App-Token", "SOME_TOKEN")
         .with_status(200)
