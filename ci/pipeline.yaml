@@ -24,3 +24,23 @@ jobs:
             dir: resource-web-app
             path: cargo
             args: [build]
+
+  - name: test
+    plan:
+      - get: resource-web-app
+        trigger: true
+        passed: [build]
+      - task: test
+        config:
+          platform: linux
+          inputs:
+            - name: resource-web-app
+          image_resource:
+            type: docker-image
+            source:
+              repository: rust
+              tag: 'latest'
+          run:
+            dir: resource-web-app
+            path: cargo
+            args: [test]
