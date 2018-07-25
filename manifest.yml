@@ -1,5 +1,5 @@
 applications:
-  - name: seattle-crime
+  - name: safebus
     memory: 512M
     instances: 2
     buildpack: https://github.com/nrxus/heroku-buildpack-rust.git
