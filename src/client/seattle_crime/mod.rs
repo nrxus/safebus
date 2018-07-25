@@ -40,11 +40,11 @@ use mocktopus::macros::mockable;
 impl Service {
     pub fn crime_nearby(&self, location: Location) -> Result<CrimeData, String> {
         let beat = self.geo_client.beat_for(location)?;
-        let six_months_ago = Local::now() - Duration::days(180);
+        let three_months_ago = Local::now() - Duration::days(90);
         let area = beat.area_km;
         let crimes = self
             .data_client
-            .crimes(&Query::new(After(six_months_ago)).and(Beat(beat.name)))?;
+            .crimes(&Query::new(After(three_months_ago)).and(Beat(beat.name)))?;
         let crimes = crimes.iter().map(|c| Crime {
             description: c.description.clone(),
             density: f64::from(c.count) / area,

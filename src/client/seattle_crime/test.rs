@@ -53,8 +53,8 @@ fn crime_nearby() {
         let beat = beat.name.clone();
 
         data::Client::crimes.mock_safe(move |_, q| {
-            let six_months_ago = Local::now() - Duration::days(180);
-            let expected_query = data::Query::new(After(six_months_ago)).and(Beat(beat.clone()));
+            let three_months_ago = Local::now() - Duration::days(90);
+            let expected_query = data::Query::new(After(three_months_ago)).and(Beat(beat.clone()));
             assert_eq!(&expected_query, q);
             MockResult::Return(Ok(crimes.clone()))
         });
