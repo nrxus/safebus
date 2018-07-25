@@ -1,0 +1,26 @@
+---
+resources:
+  - name: resource-web-app
+    type: git
+    source:
+      uri: https://github.com/nrxus/safebus.git
+
+jobs:
+  - name: build
+    plan:
+      - get: resource-web-app
+        trigger: true
+      - task: build
+        config:
+          platform: linux
+          inputs:
+            - name: resource-web-app
+          image_resource:
+            type: docker-image
+            source:
+              repository: rust
+              tag: 'latest'
+          run:
+            dir: resource-web-app
+            path: cargo
+            args: [build]
