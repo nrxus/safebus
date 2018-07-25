@@ -45,8 +45,8 @@ impl Service {
         let crimes = self
             .data_client
             .crimes(&Query::new(After(three_months_ago)).and(Beat(beat.name)))?;
-        let crimes = crimes.iter().map(|c| Crime {
-            description: c.description.clone(),
+        let crimes = crimes.into_iter().map(|c| Crime {
+            description: c.description,
             density: f64::from(c.count) / area,
         });
 
