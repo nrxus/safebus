@@ -14,7 +14,13 @@ pub fn get_bus_stops() -> Vec<client::BusStopInfo> {
     let mut response = client
         .get("/api/bus_stops?lat=47.653435&lon=-122.305641&lat_span=0.002&lon_span=0.003")
         .dispatch();
-    assert_eq!(response.status(), Status::Ok);
+    if response.status() != Status::Ok {
+        panic!(
+            "expected Status::OK but got {:?} with body {:?}",
+            response.status(),
+            response.body_string()
+        );
+    }
     assert_eq!(response.content_type(), Some(ContentType::JSON));
     let body = response.body_string().expect("body was empty");
     serde_json::from_str(body.as_str())
@@ -24,7 +30,13 @@ pub fn get_bus_stops() -> Vec<client::BusStopInfo> {
 pub fn get_bus_stop_status() -> client::BusStopStatus {
     let client = client();
     let mut response = client.get("/api/bus_stop_status/1_75403").dispatch();
-    assert_eq!(response.status(), Status::Ok);
+    if response.status() != Status::Ok {
+        panic!(
+            "expected Status::OK but got {:?} with body {:?}",
+            response.status(),
+            response.body_string()
+        );
+    }
     assert_eq!(response.content_type(), Some(ContentType::JSON));
     let body = response.body_string().expect("body was empty");
     serde_json::from_str(body.as_str())
