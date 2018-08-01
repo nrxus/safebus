@@ -68,7 +68,7 @@ impl Client {
             lon: area.lon,
             lat_span: area.lat_span,
             lon_span: area.lon_span,
-            max_count: 20,
+            max_count: area.limit.unwrap_or(20),
         })
     }
 

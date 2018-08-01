@@ -11,6 +11,7 @@ pub struct Area {
     pub lon: f64,
     pub lat_span: f64,
     pub lon_span: f64,
+    pub limit: Option<u16>,
 }
 
 #[get("/bus_stops?<area>")]

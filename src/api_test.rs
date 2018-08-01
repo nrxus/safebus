@@ -9,7 +9,25 @@ fn client() -> rocket::local::Client {
     rocket::local::Client::new(::rocket()).unwrap()
 }
 
-pub fn get_bus_stops() -> Vec<client::BusStopInfo> {
+pub fn get_bus_stops_limited() -> Vec<client::BusStopInfo> {
+    let client = client();
+    let mut response = client
+        .get("/api/bus_stops?lat=47.653435&lon=-122.305641&lat_span=0.002&lon_span=0.003&limit=100")
+        .dispatch();
+    if response.status() != Status::Ok {
+        panic!(
+            "expected Status::OK but got {:?} with body {:?}",
+            response.status(),
+            response.body_string()
+        );
+    }
+    assert_eq!(response.content_type(), Some(ContentType::JSON));
+    let body = response.body_string().expect("body was empty");
+    serde_json::from_str(body.as_str())
+        .expect("Could not parse api response into 'Vec<client::BusStop>'")
+}
+
+pub fn get_bus_stops_no_limit() -> Vec<client::BusStopInfo> {
     let client = client();
     let mut response = client
         .get("/api/bus_stops?lat=47.653435&lon=-122.305641&lat_span=0.002&lon_span=0.003")
@@ -50,7 +68,7 @@ mod unit {
     use mocktopus::mocking::{MockResult, Mockable};
 
     #[test]
-    fn bus_stops() {
+    fn bus_stops_with_limit() {
         let mut area = None;
         let expected = vec![client::BusStopInfo {
             direction: String::from("S"),
@@ -66,7 +84,7 @@ mod unit {
             });
         }
 
-        let actual = get_bus_stops();
+        let actual = get_bus_stops_limited();
         assert_eq!(actual, expected);
 
         let area = area.expect("Client::bus_stops not called");
@@ -74,6 +92,24 @@ mod unit {
         assert_eq!(area.lon, -122.305641);
         assert_eq!(area.lat_span, 0.002);
         assert_eq!(area.lon_span, 0.003);
+        assert_eq!(area.limit, Some(100));
+    }
+
+    #[test]
+    fn bus_stops_with_no_limit() {
+        let mut area = None;
+        let expected = vec![];
+        unsafe {
+            client::Client::bus_stops.mock_raw(|_, a| {
+                area = Some(a);
+                MockResult::Return(Ok(expected.clone()))
+            });
+        }
+
+        get_bus_stops_no_limit();
+
+        let area = area.expect("Client::bus_stops not called");
+        assert_eq!(area.limit, None);
     }
 
     #[test]
@@ -123,7 +159,7 @@ mod integration {
 
     #[test]
     fn bus_stops() {
-        let stops = get_bus_stops();
+        let stops = get_bus_stops_limited();
         assert!(stops.len() > 0);
     }
 

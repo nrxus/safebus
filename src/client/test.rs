@@ -52,6 +52,7 @@ fn bus_stops() {
         lon: 23.12,
         lat_span: 0.002,
         lon_span: 0.0005,
+        limit: None,
     };
     let actual_stops = subject
         .bus_stops(area)
@@ -67,6 +68,34 @@ fn bus_stops() {
         max_count: 20,
     };
     assert_eq!(actual_query, expected_query)
+}
+
+#[test]
+fn bus_stops_with_limit() {
+    let subject = Client::new(reqwest::Client::new());
+    let mut query = None;
+
+    unsafe {
+        bus::Client::stops.mock_raw(|_, q| {
+            query = Some(q.clone());
+            MockResult::Return(Ok(vec![]))
+        });
+    }
+
+    let area = Area {
+        lat: 34.32,
+        lon: 23.12,
+        lat_span: 0.002,
+        lon_span: 0.0005,
+        limit: Some(56),
+    };
+
+    subject
+        .bus_stops(area)
+        .expect("expected a succesful bus stop response");
+
+    let actual_query = query.expect("'bus::Client::stops' not called");
+    assert_eq!(actual_query.max_count, 56)
 }
 
 #[test]

@@ -8,7 +8,7 @@ pub struct StopsQuery {
     pub lon: f64,
     pub lat_span: f64,
     pub lon_span: f64,
-    pub max_count: i8,
+    pub max_count: u16,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
