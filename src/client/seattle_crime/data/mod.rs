@@ -30,10 +30,10 @@ impl Client {
 }
 
 // allow users of Client to mock the requests in unit tests
-#[cfg(all(test, not(feature = "contract")))]
+#[cfg(all(test, not(feature = "integration")))]
 use mocktopus::macros::mockable;
 
-#[cfg_attr(all(test, not(feature = "contract")), mockable)]
+#[cfg_attr(all(test, not(feature = "integration")), mockable)]
 impl Client {
     pub fn crimes(&self, query: &Query) -> Result<Vec<Crime>, String> {
         let url = format!("{}/{}", self.host, "resource/xurz-654a.json");
@@ -66,5 +66,5 @@ struct CrimeResponse {
     description: String,
 }
 
-#[cfg(all(test, not(feature = "contract")))]
+#[cfg(all(test, not(feature = "integration")))]
 mod test;

@@ -56,7 +56,7 @@ jobs:
               dir: resource-web-app
               path: cargo
               args: [test]
-        - task: contract-test
+        - task: integration-test
           config:
             caches:
               - path: resource-web-app/target
@@ -74,7 +74,7 @@ jobs:
             run:
               dir: resource-web-app
               path: cargo
-              args: [contract-test]
+              args: [integration-test]
   - name: job-deploy-app
     serial: true
     plan:

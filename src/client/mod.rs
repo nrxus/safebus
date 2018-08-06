@@ -23,7 +23,7 @@ pub struct Client {
 }
 
 // in non-unit test get the secrets from the environment variables
-#[cfg(any(not(test), feature = "contract"))]
+#[cfg(any(not(test), feature = "integration"))]
 impl Client {
     pub fn new(http_client: reqwest::Client) -> Self {
         fn expect_env(name: &str) -> String {
@@ -57,10 +57,10 @@ impl Client {
 }
 
 // allow users of Client to mock the requests in unit tests
-#[cfg(all(test, not(feature = "contract")))]
+#[cfg(all(test, not(feature = "integration")))]
 use mocktopus::macros::mockable;
 
-#[cfg_attr(all(test, not(feature = "contract")), mockable)]
+#[cfg_attr(all(test, not(feature = "integration")), mockable)]
 impl Client {
     pub fn bus_stops(&self, area: Area) -> Result<Vec<bus::StopInfo>, String> {
         self.bus_client.stops(&bus::StopsQuery {
@@ -88,5 +88,5 @@ impl Client {
     }
 }
 
-#[cfg(all(test, not(feature = "contract")))]
+#[cfg(all(test, not(feature = "integration")))]
 mod test;

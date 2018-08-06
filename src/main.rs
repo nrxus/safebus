@@ -2,7 +2,7 @@
 #![plugin(rocket_codegen)]
 #![feature(custom_derive)]
 #![cfg_attr(
-    all(test, not(feature = "contract")),
+    all(test, not(feature = "integration")),
     feature(proc_macro, proc_macro_mod, proc_macro_gen)
 )]
 
@@ -20,16 +20,16 @@ extern crate serde;
 extern crate serde_derive;
 
 // Unit Test Dependencies
-#[cfg(all(test, not(feature = "contract")))]
+#[cfg(all(test, not(feature = "integration")))]
 #[macro_use]
 extern crate approx;
-#[cfg(all(test, not(feature = "contract")))]
+#[cfg(all(test, not(feature = "integration")))]
 extern crate mockito;
-#[cfg(all(test, not(feature = "contract")))]
+#[cfg(all(test, not(feature = "integration")))]
 extern crate mocktopus;
-#[cfg(all(test, not(feature = "contract")))]
+#[cfg(all(test, not(feature = "integration")))]
 extern crate serde_urlencoded;
-#[cfg(all(test, not(feature = "contract")))]
+#[cfg(all(test, not(feature = "integration")))]
 extern crate url;
 
 // Test Dependencies

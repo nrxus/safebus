@@ -30,10 +30,10 @@ impl Client {
 }
 
 // allow users of Client to mock the requests in unit tests
-#[cfg(all(test, not(feature = "contract")))]
+#[cfg(all(test, not(feature = "integration")))]
 use mocktopus::macros::mockable;
 
-#[cfg_attr(all(test, not(feature = "contract")), mockable)]
+#[cfg_attr(all(test, not(feature = "integration")), mockable)]
 impl Client {
     pub fn beat_for(&self, location: Location) -> Result<Beat, String> {
         let url = format!(
@@ -87,5 +87,5 @@ fn try_into_beat(geo_json: GeoJson) -> Result<Beat, String> {
     })
 }
 
-#[cfg(all(test, not(feature = "contract")))]
+#[cfg(all(test, not(feature = "integration")))]
 mod test;

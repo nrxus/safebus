@@ -61,7 +61,7 @@ pub fn get_bus_stop_status() -> client::BusStopStatus {
         .expect("Could not parse api response into 'client::BusStopStatus'")
 }
 
-#[cfg(not(feature = "contract"))]
+#[cfg(not(feature = "integration"))]
 mod unit {
     use super::*;
 
@@ -153,7 +153,7 @@ mod unit {
     }
 }
 
-#[cfg(feature = "contract")]
+#[cfg(feature = "integration")]
 mod integration {
     use super::*;
 

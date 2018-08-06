@@ -33,10 +33,10 @@ impl Service {
 }
 
 // allow users of Service to mock the requests in unit tests
-#[cfg(all(test, not(feature = "contract")))]
+#[cfg(all(test, not(feature = "integration")))]
 use mocktopus::macros::mockable;
 
-#[cfg_attr(all(test, not(feature = "contract")), mockable)]
+#[cfg_attr(all(test, not(feature = "integration")), mockable)]
 impl Service {
     pub fn crime_nearby(&self, location: Location) -> Result<CrimeData, String> {
         let beat = self.geo_client.beat_for(location)?;
@@ -313,5 +313,5 @@ const RELATED_CRIMES: [&'static str; 73] = [
     "WEAPON-UNLAWFUL USE",
 ];
 
-#[cfg(all(test, not(feature = "contract")))]
+#[cfg(all(test, not(feature = "integration")))]
 mod test;

@@ -37,7 +37,7 @@ impl fmt::Display for Filter {
     }
 }
 
-#[cfg(all(test, not(feature = "contract")))]
+#[cfg(all(test, not(feature = "integration")))]
 mod test {
     use super::*;
 

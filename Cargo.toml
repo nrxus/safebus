@@ -31,4 +31,4 @@ approx = ">=0.3"
 
 [features]
 default = []
-contract = []
+integration = []

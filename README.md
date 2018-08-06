@@ -18,5 +18,5 @@ Example: https://safebus.cfapps.io/api/bus_stop_status/98_755003
 Run unit tests:
 `cargo test`
 
-Run contract tests:
-`cargo contract-test`
+Run integration tests:
+`cargo integration-test`

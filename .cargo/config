@@ -1,2 +1,2 @@
 [alias]
-contract-test = "test --features contract"
+integration-test = "test --features integration"

@@ -65,10 +65,10 @@ impl Client {
 }
 
 // allow users of Client to mock the requests in unit tests
-#[cfg(all(test, not(feature = "contract")))]
+#[cfg(all(test, not(feature = "integration")))]
 use mocktopus::macros::mockable;
 
-#[cfg_attr(all(test, not(feature = "contract")), mockable)]
+#[cfg_attr(all(test, not(feature = "integration")), mockable)]
 impl Client {
     pub fn stops(&self, query: &StopsQuery) -> Result<Vec<StopInfo>, String> {
         let url = format!("{}/api/where/stops-for-location.json", self.host);
@@ -151,5 +151,5 @@ struct ArrivalAndDeparture {
     trip_headsign: String,
 }
 
-#[cfg(all(test, not(feature = "contract")))]
+#[cfg(all(test, not(feature = "integration")))]
 mod test;
