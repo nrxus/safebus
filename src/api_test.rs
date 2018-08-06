@@ -27,24 +27,6 @@ pub fn get_bus_stops_limited() -> Vec<client::BusStopInfo> {
         .expect("Could not parse api response into 'Vec<client::BusStop>'")
 }
 
-pub fn get_bus_stops_no_limit() -> Vec<client::BusStopInfo> {
-    let client = client();
-    let mut response = client
-        .get("/api/bus_stops?lat=47.653435&lon=-122.305641&lat_span=0.002&lon_span=0.003")
-        .dispatch();
-    if response.status() != Status::Ok {
-        panic!(
-            "expected Status::OK but got {:?} with body {:?}",
-            response.status(),
-            response.body_string()
-        );
-    }
-    assert_eq!(response.content_type(), Some(ContentType::JSON));
-    let body = response.body_string().expect("body was empty");
-    serde_json::from_str(body.as_str())
-        .expect("Could not parse api response into 'Vec<client::BusStop>'")
-}
-
 pub fn get_bus_stop_status() -> client::BusStopStatus {
     let client = client();
     let mut response = client.get("/api/bus_stop_status/1_75403").dispatch();
@@ -97,19 +79,22 @@ mod unit {
 
     #[test]
     fn bus_stops_with_no_limit() {
-        let mut area = None;
-        let expected = vec![];
+        let mut called = false;
         unsafe {
             client::Client::bus_stops.mock_raw(|_, a| {
-                area = Some(a);
-                MockResult::Return(Ok(expected.clone()))
+                called = true;
+                assert_eq!(a.limit, None);
+                MockResult::Return(Ok(vec![]))
             });
         }
 
-        get_bus_stops_no_limit();
+        let client = client();
+        let response = client
+            .get("/api/bus_stops?lat=47.653435&lon=-122.305641&lat_span=0.002&lon_span=0.003")
+            .dispatch();
 
-        let area = area.expect("Client::bus_stops not called");
-        assert_eq!(area.limit, None);
+        assert_eq!(response.status(), Status::Ok);
+        assert!(called);
     }
 
     #[test]
