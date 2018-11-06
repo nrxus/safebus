@@ -5,7 +5,7 @@ use rocket_contrib::json::Json;
 
 type ApiResult<T> = Result<Json<T>, status::Custom<String>>;
 
-#[derive(FromForm, Debug, Clone, Copy, PartialEq)]
+#[derive(rocket::FromForm, Debug, Clone, Copy, PartialEq)]
 pub struct Area {
     pub lat: f64,
     pub lon: f64,
@@ -14,13 +14,16 @@ pub struct Area {
     pub limit: Option<u16>,
 }
 
-#[get("/bus_stops?<area..>")]
-pub fn bus_stops(client: State<Client>, area: Form<Area>) -> ApiResult<Vec<client::BusStopInfo>> {
+#[rocket::get("/bus_stops?<area..>")]
+pub fn bus_stops(
+    client: State<'_, Client>,
+    area: Form<Area>,
+) -> ApiResult<Vec<client::BusStopInfo>> {
     client.bus_stops(&*area).into_api()
 }
 
-#[get("/bus_stop_status/<stop_id>")]
-pub fn status(client: State<Client>, stop_id: String) -> ApiResult<client::BusStopStatus> {
+#[rocket::get("/bus_stop_status/<stop_id>")]
+pub fn status(client: State<'_, Client>, stop_id: String) -> ApiResult<client::BusStopStatus> {
     client.bus_stop_status(stop_id.as_ref()).into_api()
 }
 

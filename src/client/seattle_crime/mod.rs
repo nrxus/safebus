@@ -14,7 +14,7 @@ pub struct CrimeData {
     pub unrelated_crimes: Vec<Crime>,
 }
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct Crime {
     pub description: String,
     pub density: f64,

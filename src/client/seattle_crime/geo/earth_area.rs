@@ -44,6 +44,7 @@ impl EarthArea for LineString<f64> {
 #[cfg(all(test, not(feature = "integration")))]
 mod test {
     use super::*;
+    use approx::{__assert_approx, assert_relative_eq, relative_eq};
     use geo_types::Coordinate;
 
     #[test]

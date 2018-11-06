@@ -7,9 +7,7 @@ pub use self::{
 };
 use crate::api::Area;
 
-use reqwest;
-
-#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
+#[derive(serde::Serialize, serde::Deserialize, Clone, PartialEq, Debug)]
 pub struct BusStopStatus {
     #[serde(flatten)]
     pub info: bus::StopInfo,

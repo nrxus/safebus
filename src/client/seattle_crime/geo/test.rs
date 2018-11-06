@@ -1,5 +1,6 @@
 use super::*;
 
+use approx::{__assert_approx, assert_relative_eq, relative_eq};
 use mockito::{mock, SERVER_URL};
 use serde_urlencoded;
 

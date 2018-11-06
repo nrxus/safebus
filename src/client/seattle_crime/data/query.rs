@@ -8,7 +8,7 @@ pub enum Filter {
     Beat(String),
 }
 
-#[derive(Debug, PartialEq, Eq, Clone, Serialize)]
+#[derive(Debug, PartialEq, Eq, Clone, serde::Serialize)]
 pub struct Query {
     #[serde(rename = "$where")]
     filters: String,
@@ -29,7 +29,7 @@ impl Query {
 }
 
 impl fmt::Display for Filter {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Filter::After(date) => write!(f, "occ_datetime>'{}'", date.format("%Y-%m-%d")),
             Filter::Beat(beat) => write!(f, "beat='{}'", beat),
