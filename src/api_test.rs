@@ -1,4 +1,4 @@
-use client;
+use crate::client;
 use rocket::{
     self,
     http::{ContentType, Status},
@@ -6,7 +6,7 @@ use rocket::{
 use serde_json;
 
 fn client() -> rocket::local::Client {
-    rocket::local::Client::new(::rocket()).unwrap()
+    rocket::local::Client::new(crate::rocket()).unwrap()
 }
 
 pub fn get_bus_stops_limited() -> Vec<client::BusStopInfo> {

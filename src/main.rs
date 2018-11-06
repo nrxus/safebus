@@ -29,7 +29,6 @@ extern crate url;
 extern crate serde_json;
 
 mod api;
-
 mod client;
 
 fn rocket() -> rocket::Rocket {

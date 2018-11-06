@@ -1,8 +1,10 @@
 pub mod data;
 pub mod geo;
 
-pub use self::data::{Filter::*, Query};
-pub use self::geo::Location;
+pub use self::{
+    data::{Filter::*, Query},
+    geo::Location,
+};
 
 use chrono::{Duration, Local};
 

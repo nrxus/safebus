@@ -1,10 +1,11 @@
 mod bus;
 mod seattle_crime;
 
-pub use self::bus::Status as BusStatus;
-pub use self::bus::StopInfo as BusStopInfo;
-pub use self::seattle_crime::Crime;
-use api::Area;
+pub use self::{
+    bus::{Status as BusStatus, StopInfo as BusStopInfo},
+    seattle_crime::Crime,
+};
+use crate::api::Area;
 
 use reqwest;
 
