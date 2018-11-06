@@ -18,7 +18,8 @@ fn stops() {
         ("inSR", "4326"),
         ("returnGeometry", "true"),
         ("f", "geojson"),
-    ]).expect("could not encode query");
+    ])
+    .expect("could not encode query");
     let subject = Client::new(reqwest::Client::new(), String::from(SERVER_URL));
     let path = format!(
         "/ArcGIS/rest/services/DoIT_ext/SP_Precincts_Beats/MapServer/2/query?{}",

@@ -62,7 +62,7 @@ use mocktopus::macros::mockable;
 
 #[cfg_attr(all(test, not(feature = "integration")), mockable)]
 impl Client {
-    pub fn bus_stops(&self, area: Area) -> Result<Vec<bus::StopInfo>, String> {
+    pub fn bus_stops(&self, area: &Area) -> Result<Vec<bus::StopInfo>, String> {
         self.bus_client.stops(&bus::StopsQuery {
             lat: area.lat,
             lon: area.lon,

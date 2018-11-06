@@ -23,8 +23,8 @@ impl EarthArea for LineString<f64> {
         }
 
         let radian_points: Vec<_> = self
-            .points()
-            .chain(self.points().take(2))
+            .points_iter()
+            .chain(self.points_iter().take(2))
             .map(|p| Point::new(p.x().to_radians(), p.y().to_radians()))
             .collect();
         let degree_area: f64 = radian_points
@@ -44,15 +44,16 @@ impl EarthArea for LineString<f64> {
 #[cfg(all(test, not(feature = "integration")))]
 mod test {
     use super::*;
+    use geo_types::Coordinate;
 
     #[test]
     fn line_string_area() {
         let line_string = LineString(vec![
-            Point::new(-180., -90.),
-            Point::new(-180., 90.),
-            Point::new(180., 90.),
-            Point::new(180., -90.),
-            Point::new(-180., -90.),
+            Coordinate { x: -180., y: -90. },
+            Coordinate { x: -180., y: 90. },
+            Coordinate { x: 180., y: 90. },
+            Coordinate { x: 180., y: -90. },
+            Coordinate { x: -180., y: -90. },
         ]);
         assert_relative_eq!(line_string.area(), 510_072_000., max_relative = 0.003);
     }

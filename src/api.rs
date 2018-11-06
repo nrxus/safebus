@@ -1,7 +1,7 @@
 use client::{self, Client};
 
-use rocket::{http::Status, response::status, State};
-use rocket_contrib::Json;
+use rocket::{http::Status, request::Form, response::status, State};
+use rocket_contrib::json::Json;
 
 type ApiResult<T> = Result<Json<T>, status::Custom<String>>;
 
@@ -14,13 +14,13 @@ pub struct Area {
     pub limit: Option<u16>,
 }
 
-#[get("/bus_stops?<area>")]
-fn bus_stops(client: State<Client>, area: Area) -> ApiResult<Vec<client::BusStopInfo>> {
-    client.bus_stops(area).into_api()
+#[get("/bus_stops?<area..>")]
+pub fn bus_stops(client: State<Client>, area: Form<Area>) -> ApiResult<Vec<client::BusStopInfo>> {
+    client.bus_stops(&*area).into_api()
 }
 
 #[get("/bus_stop_status/<stop_id>")]
-fn status(client: State<Client>, stop_id: String) -> ApiResult<client::BusStopStatus> {
+pub fn status(client: State<Client>, stop_id: String) -> ApiResult<client::BusStopStatus> {
     client.bus_stop_status(stop_id.as_ref()).into_api()
 }
 

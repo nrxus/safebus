@@ -55,7 +55,7 @@ fn bus_stops() {
         limit: None,
     };
     let actual_stops = subject
-        .bus_stops(area)
+        .bus_stops(&area)
         .expect("expected a succesful bus stop response");
 
     assert_eq!(actual_stops, expected_stops);
@@ -91,7 +91,7 @@ fn bus_stops_with_limit() {
     };
 
     subject
-        .bus_stops(area)
+        .bus_stops(&area)
         .expect("expected a succesful bus stop response");
 
     let actual_query = query.expect("'bus::Client::stops' not called");

@@ -5,11 +5,9 @@ pub use self::query::{Filter, Query};
 use reqwest;
 use std::collections::HashMap;
 
-header! { (XAppToken, "X-App-Token") => [String]}
-
 pub struct Client {
     host: String,
-    token: XAppToken,
+    token: String,
     http_client: reqwest::Client,
 }
 
@@ -24,7 +22,7 @@ impl Client {
         Client {
             host,
             http_client,
-            token: XAppToken(token),
+            token,
         }
     }
 }
@@ -39,7 +37,7 @@ impl Client {
         let url = format!("{}/{}", self.host, "resource/xurz-654a.json");
         self.http_client
             .get(&url)
-            .header(self.token.clone())
+            .header("X-App-Token", self.token.as_str())
             .query(query)
             .send()
             .and_then(reqwest::Response::error_for_status)

@@ -1,23 +1,15 @@
-#![feature(plugin)]
-#![plugin(rocket_codegen)]
-#![feature(custom_derive)]
-#![cfg_attr(
-    all(test, not(feature = "integration")),
-    feature(proc_macro, proc_macro_mod, proc_macro_gen)
-)]
+#![feature(proc_macro_hygiene, decl_macro)]
 
 // Dependencies
 extern crate chrono;
-#[macro_use]
-extern crate hyper;
 extern crate geo_types;
 extern crate geojson;
 extern crate reqwest;
+#[macro_use]
 extern crate rocket;
 extern crate rocket_contrib;
-extern crate serde;
 #[macro_use]
-extern crate serde_derive;
+extern crate serde;
 
 // Unit Test Dependencies
 #[cfg(all(test, not(feature = "integration")))]

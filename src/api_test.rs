@@ -61,7 +61,7 @@ mod unit {
         }];
         unsafe {
             client::Client::bus_stops.mock_raw(|_, a| {
-                area = Some(a);
+                area = Some(*a);
                 MockResult::Return(Ok(expected.clone()))
             });
         }
@@ -99,7 +99,7 @@ mod unit {
 
     #[test]
     fn status() {
-        let mut actual_stop = None;
+        let mut called = false;
         let expected_status = client::BusStopStatus {
             info: client::BusStopInfo {
                 direction: String::from("S"),
@@ -124,17 +124,16 @@ mod unit {
             }],
         };
         unsafe {
-            client::Client::bus_stop_status.mock_raw(|_, s| {
-                actual_stop = Some(s.clone());
+            client::Client::bus_stop_status.mock_raw(|_, stop| {
+                called = true;
+                assert_eq!(stop, "1_75403");
                 MockResult::Return(Ok(expected_status.clone()))
             })
         }
 
         let actual_status = get_bus_stop_status();
         assert_eq!(actual_status, expected_status);
-
-        let actual_stop = actual_stop.expect("'Client::bus_stop_status' not called");
-        assert_eq!(actual_stop, "1_75403");
+        assert!(true, "'Client::bus_stop_status' not called");
     }
 }
 
