@@ -73,7 +73,7 @@ impl Service {
     }
 }
 
-const UNRELATED_CRIMES: [&'static str; 163] = [
+const UNRELATED_CRIMES: [&str; 163] = [
     "ADULT-VULNERABLE-NEGLECT",
     "ANIMAL-CRUELTY",
     "ANIMAL-OTH",
@@ -239,7 +239,7 @@ const UNRELATED_CRIMES: [&'static str; 163] = [
     "[INC - CASE DC USE ONLY]",
 ];
 
-const RELATED_CRIMES: [&'static str; 73] = [
+const RELATED_CRIMES: [&str; 73] = [
     "ANIMAL-BITE",
     "ASSLT-AGG-BODYFORCE",
     "ASSLT-AGG-DV-BODYFORCE",

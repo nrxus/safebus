@@ -1,24 +1,25 @@
 use super::*;
 
-use mockito::SERVER_URL;
 use mocktopus::mocking::{MockResult, Mockable};
 
-// in unit tests call to mockito SERVER_URL (localhost) in case mocktopus is not used by an unit_test
+// in unit tests call to mockito::server_url() (localhost) in case mocktopus is not used by an unit_test
 impl Client {
     pub fn new(http_client: reqwest::Client) -> Self {
         let crime_service = {
             let data_client = seattle_crime::data::Client::new(
                 http_client.clone(),
-                String::from(SERVER_URL),
+                String::from(mockito::server_url()),
                 String::from("SEATTLE_TOKEN"),
             );
-            let geo_client =
-                seattle_crime::geo::Client::new(http_client.clone(), String::from(SERVER_URL));
+            let geo_client = seattle_crime::geo::Client::new(
+                http_client.clone(),
+                String::from(mockito::server_url()),
+            );
             seattle_crime::Service::new(data_client, geo_client)
         };
         let bus_client = bus::Client::new(
             http_client,
-            String::from(SERVER_URL),
+            String::from(mockito::server_url()),
             String::from("BUS_KEY"),
         );
 

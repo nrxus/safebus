@@ -1,13 +1,13 @@
-use super::*;
+use super::bus::*;
 
-use mockito::{mock, SERVER_URL};
+use mockito::mock;
 use serde_urlencoded;
 
 #[test]
 fn stops() {
     let subject = Client::new(
         reqwest::Client::new(),
-        String::from(SERVER_URL),
+        String::from(mockito::server_url()),
         String::from("SOME_KEY"),
     );
     let query = StopsQuery {
@@ -26,7 +26,7 @@ fn stops() {
 
     let mock = mock("GET", path.as_str())
         .with_status(200)
-        .with_body(include_str!("../fixtures/stop_list.json"))
+        .with_body(include_str!("fixtures/stop_list.json"))
         .with_header("Content-Type", "application/json")
         .create();
 
@@ -59,7 +59,7 @@ fn stops() {
 fn departures() {
     let subject = Client::new(
         reqwest::Client::new(),
-        String::from(SERVER_URL),
+        String::from(mockito::server_url()),
         String::from("SOME_KEY"),
     );
 
@@ -68,7 +68,7 @@ fn departures() {
     let mock = mock("GET", path)
         .with_status(200)
         .with_body(include_str!(
-            "../fixtures/arrivals-and-departures-for-stop.json"
+            "fixtures/arrivals-and-departures-for-stop.json"
         ))
         .with_header("Content-Type", "application/json")
         .create();

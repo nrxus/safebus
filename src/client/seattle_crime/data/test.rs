@@ -1,7 +1,7 @@
 use super::*;
 
 use chrono::Local;
-use mockito::{mock, SERVER_URL};
+use mockito::mock;
 use serde_urlencoded;
 
 #[test]
@@ -10,7 +10,7 @@ fn crime() {
 
     let subject = Client::new(
         reqwest::Client::new(),
-        String::from(SERVER_URL),
+        String::from(mockito::server_url()),
         String::from("SOME_TOKEN"),
     );
 

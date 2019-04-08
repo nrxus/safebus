@@ -4,7 +4,6 @@ use self::earth_area::EarthArea;
 
 use geo_types::Polygon;
 use geojson::{conversion::TryInto, GeoJson};
-use reqwest;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Location {

@@ -1,7 +1,7 @@
 use super::*;
 
-use approx::{__assert_approx, assert_relative_eq, relative_eq};
-use mockito::{mock, SERVER_URL};
+use approx::assert_relative_eq;
+use mockito::mock;
 use serde_urlencoded;
 
 #[test]
@@ -21,7 +21,7 @@ fn stops() {
         ("f", "geojson"),
     ])
     .expect("could not encode query");
-    let subject = Client::new(reqwest::Client::new(), String::from(SERVER_URL));
+    let subject = Client::new(reqwest::Client::new(), String::from(mockito::server_url()));
     let path = format!(
         "/ArcGIS/rest/services/DoIT_ext/SP_Precincts_Beats/MapServer/2/query?{}",
         query_path

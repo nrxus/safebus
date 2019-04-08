@@ -27,7 +27,7 @@ impl Client {
     pub fn new(http_client: reqwest::Client) -> Self {
         fn expect_env(name: &str) -> String {
             use std::env;
-            env::var(name).expect(&format!("'{}' ENV VARIABLE IS REQUIRED", name))
+            env::var(name).unwrap_or_else(|_| panic!("'{}' ENV VARIABLE IS REQUIRED", name))
         }
 
         let crime_service = {
@@ -86,6 +86,9 @@ impl Client {
         })
     }
 }
+
+#[cfg(all(test, not(feature = "integration")))]
+mod bus_test;
 
 #[cfg(all(test, not(feature = "integration")))]
 mod test;

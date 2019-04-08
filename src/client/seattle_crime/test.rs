@@ -1,14 +1,12 @@
 use super::*;
 
 use chrono::{Duration, Local};
-use mockito::SERVER_URL;
 use mocktopus::mocking::{MockResult, Mockable};
-use reqwest;
 
 #[test]
 fn crime_nearby() {
     let http_client = reqwest::Client::new();
-    let host = String::from(SERVER_URL);
+    let host = String::from(mockito::server_url());
     let data_client = data::Client::new(
         http_client.clone(),
         host.clone(),

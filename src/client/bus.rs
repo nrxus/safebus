@@ -149,6 +149,3 @@ struct ArrivalAndDeparture {
     route_short_name: String,
     trip_headsign: String,
 }
-
-#[cfg(all(test, not(feature = "integration")))]
-mod test;

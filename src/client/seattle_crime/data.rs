@@ -2,7 +2,6 @@ mod query;
 
 pub use self::query::{Filter, Query};
 
-use reqwest;
 use std::collections::HashMap;
 
 pub struct Client {

@@ -10,8 +10,8 @@ pub trait EarthArea {
 
 impl EarthArea for Polygon<f64> {
     fn area(&self) -> f64 {
-        let exterior = self.exterior.area();
-        let holes: f64 = self.interiors.iter().map(EarthArea::area).sum();
+        let exterior = self.exterior().area();
+        let holes: f64 = self.interiors().iter().map(EarthArea::area).sum();
         exterior - holes
     }
 }
@@ -37,14 +37,14 @@ impl EarthArea for LineString<f64> {
                 (p3.x() - p1.x()) * f64::sin(p2.y())
             })
             .sum();
-        return (EARTH_RADIUS_KM * EARTH_RADIUS_KM * degree_area / 2.).abs();
+        (EARTH_RADIUS_KM * EARTH_RADIUS_KM * degree_area / 2.).abs()
     }
 }
 
 #[cfg(all(test, not(feature = "integration")))]
 mod test {
     use super::*;
-    use approx::{__assert_approx, assert_relative_eq, relative_eq};
+    use approx::assert_relative_eq;
     use geo_types::Coordinate;
 
     #[test]
