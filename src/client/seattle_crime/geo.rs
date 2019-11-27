@@ -3,7 +3,8 @@ mod earth_area;
 use self::earth_area::EarthArea;
 
 use geo_types::Polygon;
-use geojson::{conversion::TryInto, GeoJson};
+use geojson::GeoJson;
+use std::convert::{TryFrom, TryInto};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Location {
@@ -39,7 +40,9 @@ impl Client {
             "{}/ArcGIS/rest/services/DoIT_ext/SP_Precincts_Beats/MapServer/2/query",
             self.host
         );
-        self.http_client
+	
+        let geo_json: GeoJson = self
+            .http_client
             .get(url.as_str())
             .query(&[
                 (
@@ -54,36 +57,41 @@ impl Client {
             .send()
             .and_then(reqwest::Response::error_for_status)
             .and_then(|mut r| r.json())
-            .map_err(|e| format!("{}", e))
-            .and_then(try_into_beat)
+            .map_err(|e| format!("{}", e))?;
+
+        geo_json.try_into()
     }
 }
 
-fn try_into_beat(geo_json: GeoJson) -> Result<Beat, String> {
-    let mut features = match geo_json {
-        GeoJson::FeatureCollection(f) => Ok(f.features),
-        _ => Err(format!("Expected FeatureCollection. Got {}", geo_json)),
-    }?;
-    let feature = features.pop().ok_or("empty features in collection")?;
-    let (geometry, mut properties) = match (feature.geometry, feature.properties) {
-        (Some(g), Some(p)) => Ok((g.value, p)),
-        (None, Some(_)) => Err("Empty geometry in feature"),
-        (Some(_), None) => Err("Empty properties in feature"),
-        (None, None) => Err("Empty geometry + properties in feature"),
-    }?;
-    let polygon: Polygon<f64> = geometry
-        .try_into()
-        .map_err(|_| "could not convert geometry to polygon")?;
-    let beat = properties
-        .remove("beat")
-        .ok_or("could not find 'beat' key in properties map")?;
-    let beat = beat
-        .as_str()
-        .ok_or("could not parse 'beat' value as a string")?;
-    Ok(Beat {
-        name: beat.to_string(),
-        area_km: polygon.area(),
-    })
+impl TryFrom<GeoJson> for Beat {
+    type Error = String;
+
+    fn try_from(geo_json: GeoJson) -> Result<Beat, String> {
+        let mut features = match geo_json {
+            GeoJson::FeatureCollection(f) => Ok(f.features),
+            _ => Err(format!("Expected FeatureCollection. Got {}", geo_json)),
+        }?;
+        let feature = features.pop().ok_or("empty features in collection")?;
+        let (geometry, mut properties) = match (feature.geometry, feature.properties) {
+            (Some(g), Some(p)) => Ok((g.value, p)),
+            (None, Some(_)) => Err("Empty geometry in feature"),
+            (Some(_), None) => Err("Empty properties in feature"),
+            (None, None) => Err("Empty geometry + properties in feature"),
+        }?;
+        let polygon: Polygon<f64> = geometry
+            .try_into()
+            .map_err(|_| "could not convert geometry to polygon")?;
+        let beat = properties
+            .remove("beat")
+            .ok_or("could not find 'beat' key in properties map")?;
+        let beat = beat
+            .as_str()
+            .ok_or("could not parse 'beat' value as a string")?;
+        Ok(Beat {
+            name: beat.to_string(),
+            area_km: polygon.area(),
+        })
+    }
 }
 
 #[cfg(all(test, not(feature = "integration")))]

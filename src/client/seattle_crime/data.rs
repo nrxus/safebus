@@ -57,7 +57,7 @@ fn into_crime(responses: Vec<CrimeResponse>) -> Vec<Crime> {
         .collect()
 }
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Debug)]
 struct CrimeResponse {
     #[serde(rename = "crime_description")]
     description: String,

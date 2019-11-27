@@ -3,5 +3,6 @@ applications:
     memory: 256M
     disk_quota: 256M
     instances: 2
-    buildpack: https://github.com/nrxus/heroku-buildpack-rust.git
+    buildpacks:
+      - https://github.com/nrxus/heroku-buildpack-rust.git
     command: ROCKET_ENV=production ./target/release/seattle-crime
