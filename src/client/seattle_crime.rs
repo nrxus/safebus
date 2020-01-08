@@ -20,11 +20,13 @@ pub struct Crime {
     pub density: f64,
 }
 
+#[cfg_attr(test, faux::create)]
 pub struct Service {
     data_client: data::Client,
     geo_client: geo::Client,
 }
 
+#[cfg_attr(test, faux::methods)]
 impl Service {
     pub fn new(data_client: data::Client, geo_client: geo::Client) -> Self {
         Service {
@@ -32,14 +34,7 @@ impl Service {
             geo_client,
         }
     }
-}
 
-// allow users of Service to mock the requests in unit tests
-#[cfg(all(test, not(feature = "integration")))]
-use mocktopus::macros::mockable;
-
-#[cfg_attr(all(test, not(feature = "integration")), mockable)]
-impl Service {
     pub fn crime_nearby(&self, location: Location) -> Result<CrimeData, String> {
         let beat = self.geo_client.beat_for(location)?;
         let three_months_ago = Local::now() - Duration::days(90);

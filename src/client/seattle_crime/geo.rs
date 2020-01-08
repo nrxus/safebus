@@ -6,7 +6,7 @@ use geo_types::Polygon;
 use geojson::GeoJson;
 use std::convert::{TryFrom, TryInto};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Copy)]
 pub struct Location {
     pub lon: f64,
     pub lat: f64,
@@ -18,23 +18,18 @@ pub struct Beat {
     pub area_km: f64,
 }
 
+#[cfg_attr(test, faux::create)]
 pub struct Client {
     http_client: reqwest::Client,
     host: String,
 }
 
+#[cfg_attr(test, faux::methods)]
 impl Client {
     pub fn new(http_client: reqwest::Client, host: String) -> Self {
         Client { http_client, host }
     }
-}
-
-// allow users of Client to mock the requests in unit tests
-#[cfg(all(test, not(feature = "integration")))]
-use mocktopus::macros::mockable;
-
-#[cfg_attr(all(test, not(feature = "integration")), mockable)]
-impl Client {
+    
     pub fn beat_for(&self, location: Location) -> Result<Beat, String> {
         let url = format!(
             "{}/ArcGIS/rest/services/DoIT_ext/SP_Precincts_Beats/MapServer/2/query",

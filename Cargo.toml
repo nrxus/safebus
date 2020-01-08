@@ -28,9 +28,12 @@ features = ["geo-types"]
 mockito = "0.22"
 url = "2.1"
 serde_urlencoded = "0.6"
-mocktopus = "0.7"
 serde_json = "1.0"
 approx = "0.3"
+
+[dev-dependencies.faux]
+# path = "../faux"
+version = "0.0.2"
 
 [features]
 default = []

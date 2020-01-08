@@ -3,15 +3,15 @@
 mod api;
 mod client;
 
-fn rocket() -> rocket::Rocket {
-    let client = client::Client::new(reqwest::Client::new());
+fn rocket(client: client::Client) -> rocket::Rocket {
     rocket::ignite()
         .manage(client)
         .mount("/api", rocket::routes![api::bus_stops, api::status])
 }
 
 fn main() {
-    rocket().launch();
+    let client = client::Client::from_http_client(reqwest::Client::new());
+    rocket(client).launch();
 }
 
 #[cfg(test)]

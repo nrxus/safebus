@@ -4,6 +4,7 @@ pub use self::query::{Filter, Query};
 
 use std::collections::HashMap;
 
+#[cfg_attr(test, faux::create)]
 pub struct Client {
     host: String,
     token: String,
@@ -16,6 +17,7 @@ pub struct Crime {
     pub count: u32,
 }
 
+#[cfg_attr(test, faux::methods)]
 impl Client {
     pub fn new(http_client: reqwest::Client, host: String, token: String) -> Self {
         Client {
@@ -24,14 +26,7 @@ impl Client {
             token,
         }
     }
-}
 
-// allow users of Client to mock the requests in unit tests
-#[cfg(all(test, not(feature = "integration")))]
-use mocktopus::macros::mockable;
-
-#[cfg_attr(all(test, not(feature = "integration")), mockable)]
-impl Client {
     pub fn crimes(&self, query: &Query) -> Result<Vec<Crime>, String> {
         let url = format!("{}/{}", self.host, "resource/xurz-654a.json");
         self.http_client

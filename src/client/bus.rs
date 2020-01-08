@@ -33,12 +33,14 @@ pub struct Departures {
     pub stop: StopInfo,
 }
 
+#[cfg_attr(test, faux::create)]
 pub struct Client {
     host: String,
     key_query: [(&'static str, String); 1],
     http_client: reqwest::Client,
 }
 
+#[cfg_attr(test, faux::methods)]
 impl Client {
     pub fn new(http_client: reqwest::Client, host: String, key: String) -> Self {
         Client {
@@ -46,6 +48,21 @@ impl Client {
             http_client,
             key_query: [("key", key)],
         }
+    }
+
+    pub fn stops(&self, query: &StopsQuery) -> Result<Vec<StopInfo>, String> {
+        let url = format!("{}/api/where/stops-for-location.json", self.host);
+        self.get(url.as_str(), query)
+            .map(|r: StopsListResponse| r.data.list)
+    }
+
+    pub fn departures(&self, stop_id: &str) -> Result<Departures, String> {
+        let url = format!(
+            "{}/api/where/arrivals-and-departures-for-stop/{}.json",
+            self.host, stop_id
+        );
+        self.get(url.as_str(), &EMPTY_QUERY)
+            .map(DeparturesResponse::into)
     }
 
     fn get<T>(&self, path: &str, query: &impl serde::Serialize) -> Result<T, String>
@@ -60,28 +77,6 @@ impl Client {
             .and_then(reqwest::Response::error_for_status)
             .and_then(|mut r| r.json())
             .map_err(|e| format!("{}", e))
-    }
-}
-
-// allow users of Client to mock the requests in unit tests
-#[cfg(all(test, not(feature = "integration")))]
-use mocktopus::macros::mockable;
-
-#[cfg_attr(all(test, not(feature = "integration")), mockable)]
-impl Client {
-    pub fn stops(&self, query: &StopsQuery) -> Result<Vec<StopInfo>, String> {
-        let url = format!("{}/api/where/stops-for-location.json", self.host);
-        self.get(url.as_str(), query)
-            .map(|r: StopsListResponse| r.data.list)
-    }
-
-    pub fn departures(&self, stop_id: &str) -> Result<Departures, String> {
-        let url = format!(
-            "{}/api/where/arrivals-and-departures-for-stop/{}.json",
-            self.host, stop_id
-        );
-        self.get(url.as_str(), &EMPTY_QUERY)
-            .map(DeparturesResponse::into)
     }
 }
 

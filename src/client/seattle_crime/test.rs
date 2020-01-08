@@ -1,18 +1,12 @@
 use super::*;
 
 use chrono::{Duration, Local};
-use mocktopus::mocking::{MockResult, Mockable};
+use faux::when;
 
 #[test]
 fn crime_nearby() {
-    let http_client = reqwest::Client::new();
-    let host = String::from(mockito::server_url());
-    let data_client = data::Client::new(
-        http_client.clone(),
-        host.clone(),
-        String::from("SOME_TOKEN"),
-    );
-    let geo_client = geo::Client::new(http_client, host);
+    let mut data_client = data::Client::faux();
+    let mut geo_client = geo::Client::faux();
     let beat = geo::Beat {
         name: String::from("U2"),
         area_km: 13.2,
@@ -24,10 +18,10 @@ fn crime_nearby() {
 
     {
         let beat = beat.clone();
-        let location = location.clone();
-        geo::Client::beat_for.mock_safe(move |_, l| {
+	
+        when!(geo_client.beat_for).safe_then(move |l| {
             assert_eq!(location, l);
-            MockResult::Return(Ok(beat.clone()))
+            Ok(beat)
         });
     }
 
@@ -46,16 +40,14 @@ fn crime_nearby() {
         },
     ];
 
-    {
-        let crimes = crimes.clone();
-        let beat = beat.name.clone();
-
-        data::Client::crimes.mock_safe(move |_, q| {
+    unsafe {
+        when!(data_client.crimes).then(|q| {
             let three_months_ago = Local::now() - Duration::days(90);
-            let expected_query = data::Query::new(After(three_months_ago)).and(Beat(beat.clone()));
-            assert_eq!(&expected_query, q);
-            MockResult::Return(Ok(crimes.clone()))
-        });
+            let expected_query =
+                data::Query::new(After(three_months_ago)).and(Beat(beat.name.clone()));
+            assert_eq!(expected_query, *q);
+            Ok(crimes.clone())
+        })
     }
 
     let subject = Service::new(data_client, geo_client);
