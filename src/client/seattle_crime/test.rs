@@ -19,35 +19,38 @@ fn crime_nearby() {
     {
         let beat = beat.clone();
 
-        when!(geo_client.beat_for).safe_then(move |l| {
+        when!(geo_client.beat_for).then(move |l| {
             assert_eq!(location, l);
-            Ok(beat)
+            Ok(beat.clone())
         });
     }
 
     let crimes = vec![
         data::Crime {
-            description: String::from("ROBBERY-STREET-GUN"),
+            description: String::from("ROBBERY"),
             count: 20,
         },
         data::Crime {
-            description: String::from("FORGERY-CHECK"),
+            description: String::from("FRAUD OFFENSES"),
             count: 12,
         },
         data::Crime {
-            description: String::from("WEAPON-DISCHARGE"),
+            description: String::from("WEAPON LAW VIOLATIONS"),
             count: 15,
         },
     ];
 
-    unsafe {
-        when!(data_client.crimes).then(|q| {
+    {
+        let crimes = crimes.clone();
+        let beat = beat.clone();
+
+        when!(data_client.crimes).then(move |q| {
             let three_months_ago = Local::now() - Duration::days(90);
             let expected_query =
                 data::Query::new(After(three_months_ago)).and(Beat(beat.name.clone()));
             assert_eq!(expected_query, *q);
             Ok(crimes.clone())
-        })
+        });
     }
 
     let subject = Service::new(data_client, geo_client);

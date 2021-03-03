@@ -2,7 +2,6 @@ use super::*;
 
 use chrono::Local;
 use mockito::mock;
-use serde_urlencoded;
 
 #[test]
 fn crime() {
@@ -10,13 +9,13 @@ fn crime() {
 
     let subject = Client::new(
         reqwest::blocking::Client::new(),
-        String::from(mockito::server_url()),
+        mockito::server_url(),
         String::from("SOME_TOKEN"),
     );
 
     let query = Query::new(After(Local::now()));
     let query_path = serde_urlencoded::to_string(query.clone()).unwrap();
-    let path = format!("/resource/xurz-654a.json?{}", query_path);
+    let path = format!("/resource/tazs-3rd5.json?{}", query_path);
     let mock = mock("GET", path.as_str())
         .match_header("X-App-Token", "SOME_TOKEN")
         .with_status(200)
@@ -31,15 +30,15 @@ fn crime() {
 
     let expected = vec![
         Crime {
-            description: String::from("BURGLARY-FORCE-RES"),
-            count: 1,
-        },
-        Crime {
-            description: String::from("BURGLARY-NOFORCE-RES"),
+            description: String::from("ARSON"),
             count: 2,
         },
         Crime {
-            description: String::from("ASSLT-AGG-DV-GUN"),
+            description: String::from("ROBBERY"),
+            count: 1,
+        },
+        Crime {
+            description: String::from("ASSAULT OFFENSES"),
             count: 1,
         },
     ];

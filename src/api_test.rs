@@ -3,7 +3,6 @@ use rocket::{
     self,
     http::{ContentType, Status},
 };
-use serde_json;
 
 fn rocket_client(safebus_client: client::Client) -> rocket::local::Client {
     rocket::local::Client::new(crate::rocket(safebus_client)).unwrap()
@@ -59,8 +58,10 @@ mod unit {
         }];
 
         let mut client = client::Client::faux();
-        unsafe {
-            when!(client.bus_stops).then(|a| {
+        {
+            let expected = expected.clone();
+
+            when!(client.bus_stops).then(move |a| {
                 assert_eq!(a.lat, 47.653435);
                 assert_eq!(a.lon, -122.305641);
                 assert_eq!(a.lat_span, 0.002);
@@ -68,7 +69,7 @@ mod unit {
                 assert_eq!(a.limit, Some(100));
 
                 Ok(expected.clone())
-            })
+            });
         }
 
         let actual = get_bus_stops_limited(client);
@@ -78,12 +79,10 @@ mod unit {
     #[test]
     fn bus_stops_with_no_limit() {
         let mut client = client::Client::faux();
-        unsafe {
-            when!(client.bus_stops).then(|a| {
-                assert_eq!(a.limit, None);
-                Ok(vec![])
-            })
-        }
+        when!(client.bus_stops).then(|a| {
+            assert_eq!(a.limit, None);
+            Ok(vec![])
+        });
 
         let client = rocket_client(client);
         let response = client
@@ -119,11 +118,13 @@ mod unit {
             }],
         };
         let mut client = client::Client::faux();
-        unsafe {
-            when!(client.bus_stop_status).then(|stop| {
+        {
+            let expected_status = expected_status.clone();
+
+            when!(client.bus_stop_status).then(move |stop| {
                 assert_eq!(stop, "1_75403");
                 Ok(expected_status.clone())
-            })
+            });
         }
 
         let actual_status = get_bus_stop_status(client);

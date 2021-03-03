@@ -1,54 +1,14 @@
 [
   {
-    "beat": "U3",
-    "crime_description": "BURGLARY-FORCE-RES",
-    "crime_subcategory": "BURGLARY-RESIDENTIAL",
-    "go_number": "20180000270170",
-    "neighborhood": "SANDPOINT",
-    "occ_datetime": "2018-07-21T00:00:00.000",
-    "occ_time": "2200",
-    "precinct": "NORTH",
-    "reported_date": "2018-07-22T00:00:00.000",
-    "reported_time": "1310",
-    "sector": "U"
+    "offense_parent_group": "ARSON"
   },
   {
-    "beat": "U3",
-    "crime_description": "BURGLARY-NOFORCE-RES",
-    "crime_subcategory": "BURGLARY-RESIDENTIAL",
-    "go_number": "20180000268445",
-    "neighborhood": "SANDPOINT",
-    "occ_datetime": "2018-07-21T00:00:00.000",
-    "occ_time": "115",
-    "precinct": "NORTH",
-    "reported_date": "2018-07-21T00:00:00.000",
-    "reported_time": "115",
-    "sector": "U"
+    "offense_parent_group": "ROBBERY"
   },
   {
-    "beat": "U3",
-    "crime_description": "ASSLT-AGG-DV-GUN",
-    "crime_subcategory": "AGGRAVATED ASSAULT-DV",
-    "go_number": "20180000269352",
-    "neighborhood": "ROOSEVELT/RAVENNA",
-    "occ_datetime": "2018-07-21T00:00:00.000",
-    "occ_time": "1858",
-    "precinct": "NORTH",
-    "reported_date": "2018-07-21T00:00:00.000",
-    "reported_time": "1858",
-    "sector": "U"
+    "offense_parent_group": "ARSON"
   },
   {
-    "beat": "U3",
-    "crime_description": "BURGLARY-NOFORCE-RES",
-    "crime_subcategory": "BURGLARY-RESIDENTIAL",
-    "go_number": "20180000270124",
-    "neighborhood": "SANDPOINT",
-    "occ_datetime": "2018-07-22T00:00:00.000",
-    "occ_time": "0",
-    "precinct": "NORTH",
-    "reported_date": "2018-07-22T00:00:00.000",
-    "reported_time": "1240",
-    "sector": "U"
+    "offense_parent_group": "ASSAULT OFFENSES"
   }
 ]

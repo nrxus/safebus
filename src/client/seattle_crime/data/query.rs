@@ -46,14 +46,13 @@ mod test {
     use std::fmt::Display;
 
     use chrono::{NaiveDate, TimeZone};
-    use serde_urlencoded;
     use url::form_urlencoded::byte_serialize;
 
     #[test]
     fn date_filter() {
         let date = NaiveDate::from_ymd(2014, 7, 24).and_hms(12, 34, 6);
         let filter = Filter::After(Local.from_local_datetime(&date).unwrap());
-        let expected = "occ_datetime>'2014-07-24'";
+        let expected = "offense_start_datetime>'2014-07-24'";
         assert_eq!(filter.to_string(), expected);
     }
 

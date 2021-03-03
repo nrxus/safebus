@@ -14,8 +14,10 @@ fn bus_stops() {
         lon: 23.12005,
     }];
 
-    unsafe {
-        when!(bus_client.stops).then(|q| {
+    {
+        let expected_stops = expected_stops.clone();
+
+        when!(bus_client.stops).then(move |q| {
             assert_eq!(
                 *q,
                 bus::StopsQuery {
@@ -27,7 +29,7 @@ fn bus_stops() {
                 }
             );
             Ok(expected_stops.clone())
-        })
+        });
     }
 
     let area = Area {
@@ -51,12 +53,10 @@ fn bus_stops() {
 fn bus_stops_with_limit() {
     let mut bus_client = bus::Client::faux();
 
-    unsafe {
-        when!(bus_client.stops).then(|q| {
-            assert_eq!(q.max_count, 56);
-            Ok(vec![])
-        });
-    }
+    when!(bus_client.stops).then(|q| {
+        assert_eq!(q.max_count, 56);
+        Ok(vec![])
+    });
 
     let area = Area {
         lat: 34.32,
@@ -101,14 +101,21 @@ fn bus_stop_status() {
         description: String::from("ROBBERY"),
         density: 0.23,
     }];
-    unsafe {
-        when!(bus_client.departures).then(|b| {
+
+    {
+        let departure_info = departure_info.clone();
+        when!(bus_client.departures).then(move |b| {
             assert_eq!(b, "3_232");
             Ok(departure_info.clone())
         });
     }
-    unsafe {
-        when!(crime_service.crime_nearby).then(|actual_location| {
+
+    {
+        let departure_info = departure_info.clone();
+        let related_crimes = related_crimes.clone();
+        let unrelated_crimes = unrelated_crimes.clone();
+
+        when!(crime_service.crime_nearby).then(move |actual_location| {
             let expected_location = seattle_crime::Location {
                 lat: departure_info.stop.lat,
                 lon: departure_info.stop.lon,

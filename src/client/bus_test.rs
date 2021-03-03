@@ -1,13 +1,12 @@
 use super::bus::*;
 
 use mockito::mock;
-use serde_urlencoded;
 
 #[test]
 fn stops() {
     let subject = Client::new(
         reqwest::blocking::Client::new(),
-        String::from(mockito::server_url()),
+        mockito::server_url(),
         String::from("SOME_KEY"),
     );
     let query = StopsQuery {
@@ -59,7 +58,7 @@ fn stops() {
 fn departures() {
     let subject = Client::new(
         reqwest::blocking::Client::new(),
-        String::from(mockito::server_url()),
+        mockito::server_url(),
         String::from("SOME_KEY"),
     );
 
