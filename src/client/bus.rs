@@ -37,12 +37,12 @@ pub struct Departures {
 pub struct Client {
     host: String,
     key_query: [(&'static str, String); 1],
-    http_client: reqwest::Client,
+    http_client: reqwest::blocking::Client,
 }
 
 #[cfg_attr(test, faux::methods)]
 impl Client {
-    pub fn new(http_client: reqwest::Client, host: String, key: String) -> Self {
+    pub fn new(http_client: reqwest::blocking::Client, host: String, key: String) -> Self {
         Client {
             host,
             http_client,
@@ -74,8 +74,8 @@ impl Client {
             .query(query)
             .query(&self.key_query)
             .send()
-            .and_then(reqwest::Response::error_for_status)
-            .and_then(|mut r| r.json())
+            .and_then(reqwest::blocking::Response::error_for_status)
+            .and_then(reqwest::blocking::Response::json)
             .map_err(|e| format!("{}", e))
     }
 }

@@ -20,22 +20,22 @@ pub struct Beat {
 
 #[cfg_attr(test, faux::create)]
 pub struct Client {
-    http_client: reqwest::Client,
+    http_client: reqwest::blocking::Client,
     host: String,
 }
 
 #[cfg_attr(test, faux::methods)]
 impl Client {
-    pub fn new(http_client: reqwest::Client, host: String) -> Self {
+    pub fn new(http_client: reqwest::blocking::Client, host: String) -> Self {
         Client { http_client, host }
     }
-    
+
     pub fn beat_for(&self, location: Location) -> Result<Beat, String> {
         let url = format!(
             "{}/ArcGIS/rest/services/DoIT_ext/SP_Precincts_Beats/MapServer/2/query",
             self.host
         );
-	
+
         let geo_json: GeoJson = self
             .http_client
             .get(url.as_str())
@@ -50,8 +50,8 @@ impl Client {
                 ("f", "geojson"),
             ])
             .send()
-            .and_then(reqwest::Response::error_for_status)
-            .and_then(|mut r| r.json())
+            .and_then(reqwest::blocking::Response::error_for_status)
+            .and_then(reqwest::blocking::Response::json)
             .map_err(|e| format!("{}", e))?;
 
         geo_json.try_into()

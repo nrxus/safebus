@@ -59,12 +59,12 @@ impl Client {
 
 // not mocked because we explicitely do not want a real http client under tests
 impl Client {
-    pub fn from_http_client(http_client: reqwest::Client) -> Self {
+    pub fn from_http_client(http_client: reqwest::blocking::Client) -> Self {
         fn expect_env(name: &str) -> String {
             use std::env;
             env::var(name).unwrap_or_else(|_| panic!("'{}' ENV VARIABLE IS REQUIRED", name))
         }
-	
+
         let crime_service = {
             use self::seattle_crime::{data, geo};
             let data_client = {

@@ -10,7 +10,7 @@ fn rocket(client: client::Client) -> rocket::Rocket {
 }
 
 fn main() {
-    let client = client::Client::from_http_client(reqwest::Client::new());
+    let client = client::Client::from_http_client(reqwest::blocking::Client::new());
     rocket(client).launch();
 }
 

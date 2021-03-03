@@ -31,7 +31,9 @@ impl Query {
 impl fmt::Display for Filter {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Filter::After(date) => write!(f, "occ_datetime>'{}'", date.format("%Y-%m-%d")),
+            Filter::After(date) => {
+                write!(f, "offense_start_datetime>'{}'", date.format("%Y-%m-%d"))
+            }
             Filter::Beat(beat) => write!(f, "beat='{}'", beat),
         }
     }

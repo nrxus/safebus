@@ -9,7 +9,7 @@ fn crime() {
     use super::query::Filter::*;
 
     let subject = Client::new(
-        reqwest::Client::new(),
+        reqwest::blocking::Client::new(),
         String::from(mockito::server_url()),
         String::from("SOME_TOKEN"),
     );

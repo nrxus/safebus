@@ -6,7 +6,7 @@ use serde_urlencoded;
 #[test]
 fn stops() {
     let subject = Client::new(
-        reqwest::Client::new(),
+        reqwest::blocking::Client::new(),
         String::from(mockito::server_url()),
         String::from("SOME_KEY"),
     );
@@ -58,7 +58,7 @@ fn stops() {
 #[test]
 fn departures() {
     let subject = Client::new(
-        reqwest::Client::new(),
+        reqwest::blocking::Client::new(),
         String::from(mockito::server_url()),
         String::from("SOME_KEY"),
     );

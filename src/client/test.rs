@@ -122,7 +122,7 @@ fn bus_stop_status() {
     }
 
     let subject = Client::new(crime_service, bus_client);
-    
+
     let actual_status = subject
         .bus_stop_status("3_232")
         .expect("expected a succesful bus stop status");

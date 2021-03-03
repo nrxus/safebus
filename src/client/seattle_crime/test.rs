@@ -18,7 +18,7 @@ fn crime_nearby() {
 
     {
         let beat = beat.clone();
-	
+
         when!(geo_client.beat_for).safe_then(move |l| {
             assert_eq!(location, l);
             Ok(beat)

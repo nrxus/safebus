@@ -138,7 +138,7 @@ mod integration {
     #[test]
     fn bus_stops() {
         let stops = get_bus_stops_limited(client::Client::from_http_client(
-            reqwest::client::Client::new(),
+            reqwest::blocking::Client::new(),
         ));
         assert!(stops.len() > 0);
     }
@@ -146,7 +146,7 @@ mod integration {
     #[test]
     fn status() {
         let status = get_bus_stop_status(client::Client::from_http_client(
-            reqwest::client::Client::new(),
+            reqwest::blocking::Client::new(),
         ));
         assert!(status.buses.len() > 0);
         assert!(status.related_crimes.len() > 0);

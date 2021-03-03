@@ -21,7 +21,10 @@ fn stops() {
         ("f", "geojson"),
     ])
     .expect("could not encode query");
-    let subject = Client::new(reqwest::Client::new(), String::from(mockito::server_url()));
+    let subject = Client::new(
+        reqwest::blocking::Client::new(),
+        String::from(mockito::server_url()),
+    );
     let path = format!(
         "/ArcGIS/rest/services/DoIT_ext/SP_Precincts_Beats/MapServer/2/query?{}",
         query_path
