@@ -14,23 +14,14 @@ fn bus_stops() {
         lon: 23.12005,
     }];
 
-    {
-        let expected_stops = expected_stops.clone();
-
-        when!(bus_client.stops).then(move |q| {
-            assert_eq!(
-                *q,
-                bus::StopsQuery {
-                    lat: 34.32,
-                    lon: 23.12,
-                    lat_span: 0.002,
-                    lon_span: 0.0005,
-                    max_count: 20,
-                }
-            );
-            Ok(expected_stops.clone())
-        });
-    }
+    when!(bus_client.stops(bus::StopsQuery {
+        lat: 34.32,
+        lon: 23.12,
+        lat_span: 0.002,
+        lon_span: 0.0005,
+        max_count: 20,
+    }))
+    .then_return(Ok(expected_stops.clone()));
 
     let area = Area {
         lat: 34.32,
@@ -53,6 +44,8 @@ fn bus_stops() {
 fn bus_stops_with_limit() {
     let mut bus_client = bus::Client::faux();
 
+    // faux doesn't allow for pattern matching on arguments
+    // too much work to implement an `ArgMatcher`
     when!(bus_client.stops).then(|q| {
         assert_eq!(q.max_count, 56);
         Ok(vec![])
@@ -102,31 +95,16 @@ fn bus_stop_status() {
         density: 0.23,
     }];
 
-    {
-        let departure_info = departure_info.clone();
-        when!(bus_client.departures).then(move |b| {
-            assert_eq!(b, "3_232");
-            Ok(departure_info.clone())
-        });
-    }
-
-    {
-        let departure_info = departure_info.clone();
-        let related_crimes = related_crimes.clone();
-        let unrelated_crimes = unrelated_crimes.clone();
-
-        when!(crime_service.crime_nearby).then(move |actual_location| {
-            let expected_location = seattle_crime::Location {
-                lat: departure_info.stop.lat,
-                lon: departure_info.stop.lon,
-            };
-            assert_eq!(actual_location, expected_location);
-            Ok(seattle_crime::CrimeData {
-                related_crimes: related_crimes.clone(),
-                unrelated_crimes: unrelated_crimes.clone(),
-            })
-        });
-    }
+    faux::when!(bus_client.departures("3_232")).then_return(Ok(departure_info.clone()));
+    when!(crime_service.crime_nearby(seattle_crime::Location {
+        lat: departure_info.stop.lat,
+        lon: departure_info.stop.lon,
+    }))
+    .once()
+    .then_return(Ok(seattle_crime::CrimeData {
+        related_crimes: related_crimes.clone(),
+        unrelated_crimes: unrelated_crimes.clone(),
+    }));
 
     let subject = Client::new(crime_service, bus_client);
 

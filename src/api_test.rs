@@ -44,6 +44,8 @@ pub fn get_bus_stop_status(safebus_client: client::Client) -> client::BusStopSta
 
 #[cfg(not(feature = "integration"))]
 mod unit {
+    use crate::api::Area;
+
     use super::*;
     use faux::when;
 
@@ -58,19 +60,14 @@ mod unit {
         }];
 
         let mut client = client::Client::faux();
-        {
-            let expected = expected.clone();
-
-            when!(client.bus_stops).then(move |a| {
-                assert_eq!(a.lat, 47.653435);
-                assert_eq!(a.lon, -122.305641);
-                assert_eq!(a.lat_span, 0.002);
-                assert_eq!(a.lon_span, 0.003);
-                assert_eq!(a.limit, Some(100));
-
-                Ok(expected.clone())
-            });
-        }
+        when!(client.bus_stops(Area {
+            lat: 47.653435,
+            lon: -122.305641,
+            lat_span: 0.002,
+            lon_span: 0.003,
+            limit: Some(100),
+        }))
+        .then_return(Ok(expected.clone()));
 
         let actual = get_bus_stops_limited(client);
         assert_eq!(actual, expected);
@@ -79,6 +76,8 @@ mod unit {
     #[test]
     fn bus_stops_with_no_limit() {
         let mut client = client::Client::faux();
+        // faux doesn't allow for pattern matching on arguments
+        // too much work to implement an `ArgMatcher`
         when!(client.bus_stops).then(|a| {
             assert_eq!(a.limit, None);
             Ok(vec![])
@@ -118,14 +117,7 @@ mod unit {
             }],
         };
         let mut client = client::Client::faux();
-        {
-            let expected_status = expected_status.clone();
-
-            when!(client.bus_stop_status).then(move |stop| {
-                assert_eq!(stop, "1_75403");
-                Ok(expected_status.clone())
-            });
-        }
+        when!(client.bus_stop_status("1_75403")).then_return(Ok(expected_status.clone()));
 
         let actual_status = get_bus_stop_status(client);
         assert_eq!(actual_status, expected_status);
