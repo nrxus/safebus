@@ -76,12 +76,8 @@ mod unit {
     #[test]
     fn bus_stops_with_no_limit() {
         let mut client = client::Client::faux();
-        // faux doesn't allow for pattern matching on arguments
-        // too much work to implement an `ArgMatcher`
-        when!(client.bus_stops).then(|a| {
-            assert_eq!(a.limit, None);
-            Ok(vec![])
-        });
+        when!(client.bus_stops(*_ = faux::pattern!(Area { limit: None, .. })))
+            .then_return(Ok(vec![]));
 
         let client = rocket_client(client);
         let response = client

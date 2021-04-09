@@ -386,9 +386,9 @@ dependencies = [
 
 [[package]]
 name = "faux"
-version = "0.0.9"
+version = "0.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0caa73edaa46bd2abdfbd3c0367f38da9b4bac6628d83b2a4ce741c5fbb0aa8c"
+checksum = "af673f8d7f742e759ace9f15a8f52d84f06b283660a5eeefa7578f2341bb10e4"
 dependencies = [
  "faux_macros",
  "paste",
@@ -396,9 +396,9 @@ dependencies = [
 
 [[package]]
 name = "faux_macros"
-version = "0.0.9"
+version = "0.0.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e45f3f1bb9a0eb177e4da46cb2767f1c3bce5e423c99de6b3d9bf7f27797d98f"
+checksum = "13dc05ad6e5084754f66fa193f580b40f4a4e14ac88323d783f0fcc888a6f17f"
 dependencies = [
  "darling",
  "proc-macro2 1.0.24",

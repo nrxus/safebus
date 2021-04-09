@@ -30,7 +30,7 @@ url = "2.2.1"
 serde_urlencoded = "0.7.0"
 serde_json = "1.0.64"
 approx = "0.4.0"
-faux = "0.0.9"
+faux = "0.0.10"
 
 [features]
 default = []

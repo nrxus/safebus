@@ -43,13 +43,10 @@ fn bus_stops() {
 #[test]
 fn bus_stops_with_limit() {
     let mut bus_client = bus::Client::faux();
+    use bus::StopsQuery;
 
-    // faux doesn't allow for pattern matching on arguments
-    // too much work to implement an `ArgMatcher`
-    when!(bus_client.stops).then(|q| {
-        assert_eq!(q.max_count, 56);
-        Ok(vec![])
-    });
+    when!(bus_client.stops(*_ = faux::pattern!(StopsQuery { max_count: 56, .. })))
+        .then_return(Ok(vec![]));
 
     let area = Area {
         lat: 34.32,
